@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import AddTransactionCard from './components/AddTransactionCard'
+import Header from './components/Header'
+import Hero from './components/Hero'
+import Tabuler from './components/Tabular'
+import {
+  isWallectConnected,
+  checkIfTransactionExist,
+  connectWallet,
+} from './shared/Transaction'
+import { useGlobalState } from './store'
+import { useEffect } from 'react'
+import MetamaskLogin from './components/MetamaskLogin'
 
-function App() {
+
+export default function App() {
+
+  const [connectedAccount] = useGlobalState('connectedAccount')
+
+  useEffect(() => {
+    isWallectConnected()
+    checkIfTransactionExist()
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <Hero />
+        {!connectedAccount ? (
+          <div className="text-center mb-10">
+            <button
+              onClick={connectWallet}
+              className="text-white bg-blue-500 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-blue-500 hover:border hover:border-blue-500 focus:outline-none focus:ring"
+            >
+              Connect Wallet
+            </button>
+          </div>
+        ) : (
+          <>
+            <Tabuler />
+            <AddTransactionCard />
+          </>
+        )}
+        <MetamaskLogin />
+      </div>
     </div>
-  );
+  )
 }
-
-export default App;
