@@ -11,7 +11,7 @@ const API = axios.create({baseURL: 'http://localhost:5001'})
 
 // const url = 'http://localhost:5001/posts';
 
-export const fetchUser = () => API.get('/users');
+export const fetchUser = () => axios.get('http://localhost:5001/users/you');
 
 // export const fetchPostsBySearch = (searchQuery) => API.get(`/posts/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
 
@@ -20,6 +20,12 @@ export const createUser = (newUser) => API.post('/users/new', newUser);
 export const updateUser = (id, updatedUser) => API.patch(`/users/${id}`, updatedUser);
 
 export const deleteUser = (id) => API.delete(`/users/${id}`);
+
+export const fetchRequest = () => API.get('/requests');
+
+export const createRequest = (newRequest) => API.post('/requests/new', newRequest);
+
+export const deleteRequest = (id) => API.delete(`/requests/${id}`);
 
 // export const likePost = (id) => API.patch(`/posts/${id}/likePost`);
 

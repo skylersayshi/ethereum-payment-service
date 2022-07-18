@@ -7,30 +7,27 @@ import {
 
 import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { createUser, updateUser } from '../requests/actions/users';
+import { createUser, getUsers } from '../requests/actions/users';
 import { useDispatch } from 'react-redux'
 import FileBase from 'react-file-base64';
+import { useGlobalState, setGlobalState } from '../store';
+
 
 
 const MetamaskLogin = () => {
-  const [bio, setBio] = useState('')
-  const [twitter, setTwitter] = useState('')
-  const [name, setName] = useState('')
   const [profile, setProfile] = useState({})
   const [localDid, setDid] = useState(null)
   const [selfId, setSelfId] = useState(null)
   const [loaded, setLoaded] = useState(false)
   const [showGreeting, setShowGreeting] = useState(false)
-  const [walletAddress, setWalletAddress] = useState('')
   const selfIdRef = useRef(null)
   const didRef = useRef(null)
   selfIdRef.current = selfId
   didRef.current = localDid
+  const history = useNavigate()
 
-  const dispatch = useDispatch();
-  const [currentId, setCurrentId] = useState(0)
-
-  const user = useSelector((state)=> currentId ? state.users.find((specificUser)=> specificUser.walletAddress === currentId) : null);
+  console.log(profile)
+  
   const [userData, setUserData] = useState({
     name: '',
     walletAddress: '',
@@ -39,24 +36,23 @@ const MetamaskLogin = () => {
     profilePic: '',
   });
 
+  const [userWalletAddress, setUserWalletAddress] = useState(0)
+  const dispatch = useDispatch();
+
   useEffect(()=>{
-    if(user) setUserData(user);
-  }, [user])
+    if(userWalletAddress !== 0)
+    dispatch(getUsers())
+  }, [dispatch, userWalletAddress])
 
   const handleSubmit = async (e) =>{
     e.preventDefault()
     updateProfile()
-    if(currentId===0){
-      dispatch(createUser({...userData, walletAddress: walletAddress}))
-      
-    } else {        
-      dispatch(updateUser(currentId, {...userData, walletAddress: walletAddress}));
-    }
+    if(userWalletAddress)
+      dispatch(createUser({...userData, walletAddress: userWalletAddress}, history))
     clear();
   }
 
   const clear = () => {
-    setCurrentId(0);
     setUserData({
       name: '',
       walletAddress: '',
@@ -74,8 +70,8 @@ const MetamaskLogin = () => {
       console.log('error: ', error)
       return
     }
-    setWalletAddress(address)
-    console.log(walletAddress)
+    localStorage.setItem('globalWalletAddress', JSON.stringify(address))
+    setUserWalletAddress(JSON.parse(localStorage.getItem('globalWalletAddress')))
     setDid(id)
     setSelfId(selfId)
     const data = await selfId.get('basicProfile', id)
@@ -96,14 +92,13 @@ const MetamaskLogin = () => {
       await connect()
     }
     const user = {...profile}
-    if (twitter) userData.twitter = twitter
-    if (bio) userData.bio = bio
-    if (name) userData.name = name
+    if (userData) user.twitter = userData.twitter
+    if (userData) user.bio = userData.bio
+    if (userData) user.name = userData.name
   
     await selfIdRef.current.set('basicProfile', user)
     setLocalProfileData()
     console.log('profile updated...')
-    console.log('wallet address:' + walletAddress)
   }
 
   async function readProfile() {
@@ -142,7 +137,7 @@ const MetamaskLogin = () => {
               Decentralized Identity
             </h1>
             <p className="text-xl text-center mt-2 text-gray-400">An authentication flow built with Ceramic & IDX</p>
-            <p>Wallet Address: {walletAddress}</p>
+            <p>Wallet Address: {userWalletAddress}</p>
             {
               Object.keys(profile).length ? (
                 <div className="mb-4">

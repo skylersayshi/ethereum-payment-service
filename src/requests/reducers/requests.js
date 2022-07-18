@@ -1,16 +1,12 @@
-export default (users = [], action) => {
+export default (requests = [], action) => {
     switch(action.type){
-        case 'FETCH_ALL':
+        case 'FETCH_ALL_REQUESTS':
             // return users.map((user)=> (user.walletAddress === action.payload.walletAddress ? action.payload: user))
             return action.payload;
         // case 'FETCH_BY_SEARCH':
         //     return action.payload; 
-        case 'CREATE':
-            return [...users, action.payload];
-
-        // case "LOGOUT":
-        //     localStorage.clear();
-        //     return users
+        case 'CREATE_REQUEST':
+            return [...requests, action.payload];
         // case 'UPDATE':
         //     return users.map((user) => (user._id === action.payload._id ? action.payload : user));
         // // case 'LIKE':
@@ -18,6 +14,6 @@ export default (users = [], action) => {
         // case 'DELETE':
         //     return users.filter((user)=> user.id !== action.payload);
         default:
-            return users;
+            return requests;
     }
 }

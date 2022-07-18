@@ -2,12 +2,11 @@ import * as api from '../api';
 
 //action creators
 
-export const getUsers = () => async (dispatch) => {
+export const getRequests = () => async (dispatch) => {
 
     try{
-        const {data} = await api.fetchUser();
-        dispatch({type: 'FETCH_ALL', payload: data});
-        // history('/home')
+        const {data} = await api.fetchRequest();
+        dispatch({type: 'FETCH_ALL_REQUESTS', payload: data});
     }catch(error){
         console.log(error.message)
     }
@@ -34,10 +33,10 @@ export const getUsers = () => async (dispatch) => {
 //     }
 // }
 
-export const createUser = (user) => async (dispatch) =>{
+export const createRequest = (request) => async (dispatch) =>{
     try{
-        const { data } = await api.createUser(user);
-        dispatch({type: 'CREATE', payload: data});
+        const { data } = await api.createRequest(request);
+        dispatch({type: 'CREATE_REQUEST', payload: data});
     }
     catch(error){
         console.log(error);
@@ -53,14 +52,14 @@ export const createUser = (user) => async (dispatch) =>{
 //     }
 // }
 
-// export const deleteUser = (id) => async (dispatch) => {
-//     try {
-//         await api.deleteUser(id);
-//         dispatch({type: 'DELETE', payload: id});
-//     } catch (error){
-//         console.log(error);
-//     }
-// }
+export const deleteRequest = (id) => async (dispatch) => {
+    try {
+        await api.deleteRequest(id);
+        dispatch({type: 'DELETE', payload: id});
+    } catch (error){
+        console.log(error);
+    }
+}
 
 // export const likePost = (id) => async(dispatch) => {
 //     try{
