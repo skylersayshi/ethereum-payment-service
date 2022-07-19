@@ -7,7 +7,7 @@ const Header = () => {
         <img
           className="w-6 h-6 object-contain cursor-pointer"
           src="https://seeklogo.com/images/E/ethereum-logo-EC6CDBA45B-seeklogo.com.png"
-          alt="Etherium Logo"
+          alt="Ethereum Logo"
         />
         <span>Dalto</span>
       </div>

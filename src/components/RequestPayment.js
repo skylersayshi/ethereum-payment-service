@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getUsers } from '../requests/actions/users'
 import { createRequest } from '../requests/actions/requests'
 import { setGlobalState, useGlobalState } from '../store';
+import { CheckCircleIcon } from '@heroicons/react/solid'
+import StatusBar from './StatusBar'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -14,13 +16,13 @@ function classNames(...classes) {
 
 export default function RequestPayment() {
 
-    const [userWalletAddress, setUserWalletAddress] = useState(0)
+    const [userWalletAddress] = useGlobalState('walletAddress')
     const userProfile = useSelector((state)=> userWalletAddress ? state.users.find((specificUser)=> specificUser.walletAddress === userWalletAddress) : null) 
     const allUsers = useSelector((state)=> state.users)   
     const dispatch = useDispatch()
+    const [statusBar, setStatusBar] = useState(false)
     useEffect(()=>{
         dispatch(getUsers())
-        setUserWalletAddress(JSON.parse(localStorage.getItem('globalWalletAddress')))
     }, [])
   
     const [requestData, setRequestData] = useState({
@@ -31,6 +33,17 @@ export default function RequestPayment() {
           amountETH: '',
           remark: ''
     })
+
+    const clear = () =>{
+      setRequestData({
+          requestToName: '',
+          requestToAddress: '',
+          requestFromName: '',
+          requestFromAddress: '',
+          amountETH: '',
+          remark: ''
+      })
+    }
   
     useEffect(()=>{
           if(userProfile) setRequestData(prev =>({...prev.requestData, requestFromAddress: userProfile.walletAddress, requestFromName: userProfile.name}));
@@ -39,6 +52,8 @@ export default function RequestPayment() {
     const handleSubmit = async (event) =>{
         event.preventDefault();  
         dispatch(createRequest({...requestData}))
+        setStatusBar(true)
+        clear()
     }
 
     const [query, setQuery] = useState('')
@@ -85,8 +100,8 @@ export default function RequestPayment() {
             leaveTo="opacity-0 scale-95"
           >
             <Dialog.Panel className="mx-auto max-w-3xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
-              <Combobox>
-                {({ activeOption }) => (
+              <Combobox>                              
+               {({ activeOption }) => (
                   <>
                     <div className="relative">
                       <SearchIcon
@@ -137,7 +152,6 @@ export default function RequestPayment() {
                             ))}
                           </div>
                         </div>
-
                         {activeOption && (
                           <div className="hidden h-96 w-1/2 flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
                             <div className="flex-none p-6 text-center">
@@ -166,13 +180,13 @@ export default function RequestPayment() {
 
 
                             <div className="mt-8">
-
                                 <div className="mt-6">
+                                {statusBar ? (
+                                      <StatusBar />
+                                ) : (
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <div>
                                         <div>
-
-
                                             <label htmlFor="amountETH" className="block text-sm font-medium text-gray-700">
                                             Request Amount
                                             </label>
@@ -196,23 +210,7 @@ export default function RequestPayment() {
                                                 </span>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    {/* <label htmlFor="requestToName" className="block text-sm font-medium text-gray-700">
-                                        To
-                                    </label>
-                                    <div className="mt-1">
-                                        <input
-                                            type="text" 
-                                            id="requestToName" 
-                                            name="requestToName"
-                                            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                            placeholder="Search by Name"
-                                            value={requestData.requestToName}
-                                            onChange={(e)=>{setRequestData({...requestData, requestToName: e.target.value})}}
-                                        />                     
-                                    </div> */}
-
+                                    </div>                      
                                     <label htmlFor="remark" className="block text-sm font-medium text-gray-700">
                                         For
                                     </label>
@@ -241,13 +239,9 @@ export default function RequestPayment() {
                                     </button>
                                     </div>
                                 </form>
+                              )}
                                 </div>
                                 </div>
-
-
-
-
-
                             </div>
                           </div>
                         )}

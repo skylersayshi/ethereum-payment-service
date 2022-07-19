@@ -17,9 +17,11 @@
     "@testing-library/user-event": "^12.1.10",
     "3id-did-provider": "^1.1.1",
     "axios": "^0.19.2",
+    "crypto-price": "^0.0.6",
+    "cryptocurrency-unit-convert": "^1.2.8",
     "ethers": "^5.6.9",
     "identicon.js": "^2.3.3",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-file-base64": "^1.0.3",
@@ -30,7 +32,8 @@
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "web3": "^1.7.4"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -32,14 +32,14 @@ import { useLocation, useNavigate, Link } from 'react-router-dom'
 import useBeforeRender from '../../utils/utils'
 import RequestPayment from '../RequestPayment'
 import Tabuler from '../Tabular'
+import Statistics from '../Statistics'
+import StatusBar from '../StatusBar'
 
 const navigation = [
   { name: 'Home', href: '#', icon: HomeIcon, current: true },
-  { name: 'History', href: '#', icon: ClockIcon, current: false },
-  { name: 'Balances', href: '#', icon: ScaleIcon, current: false },
-  { name: 'Cards', href: '#', icon: CreditCardIcon, current: false },
-  { name: 'Recipients', href: '#', icon: UserGroupIcon, current: false },
-  { name: 'Reports', href: '#', icon: DocumentReportIcon, current: false },
+  { name: 'Requests To Me', href: 'requeststome', icon: CreditCardIcon, current: false },
+  { name: 'Requests From Me', href: 'requestsfromme', icon: CreditCardIcon, current: false },
+  { name: 'Find Users', href: '/findusers', icon: UserGroupIcon, current: false },
 ]
 const secondaryNavigation = [
   { name: 'Settings', href: '#', icon: CogIcon },
@@ -75,19 +75,23 @@ function classNames(...classes) {
 
 
 export default function Homepage() {
-    const [userWalletAddress, setUserWalletAddress] = useState(0)
-    const userProfile = useSelector((state)=> userWalletAddress ? state.users.find((specificUser)=> specificUser.walletAddress === userWalletAddress) : null)    
+    const [globalWalletAddress] = useGlobalState('walletAddress')
+    const [globalAccountBalance] = useGlobalState('userBalance')
+    const [userWalletAddress, setUserWalletAddress] = useState(globalWalletAddress)
+    const userProfile = useSelector((state)=> userWalletAddress ? state.users.find((specificUser)=> specificUser.walletAddress === userWalletAddress) : null)
+    console.log(userProfile)
+    const totalFollowers = userProfile?.followers?.length   
     const dispatch = useDispatch()
     useEffect(()=>{
         dispatch(getUsers())
-        setUserWalletAddress(JSON.parse(localStorage.getItem('globalWalletAddress')))
-    }, [])
+        setUserWalletAddress(globalWalletAddress)
+    }, [dispatch, globalWalletAddress])
 
     
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [slider, setSlider] = useGlobalState('falseState')
     const logout = () =>{
-        localStorage.clear()
+        setGlobalState('walletAddress', '')
     }
     
   return (
@@ -154,9 +158,9 @@ export default function Homepage() {
                   >
                     <div className="px-2 space-y-1">
                       {navigation.map((item) => (
-                        <a
+                        <Link
                           key={item.name}
-                          href={item.href}
+                          to={item.href}
                           className={classNames(
                             item.current
                               ? 'bg-cyan-800 text-white'
@@ -167,7 +171,7 @@ export default function Homepage() {
                         >
                           <item.icon className="mr-4 flex-shrink-0 h-6 w-6 text-cyan-200" aria-hidden="true" />
                           {item.name}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                     <div className="mt-6 pt-6">
@@ -396,7 +400,7 @@ export default function Homepage() {
                       type="button"
                       className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
                     >
-                      Send
+                      Send ETH
                     </button>
                     <button
                       type="button"
@@ -404,7 +408,7 @@ export default function Homepage() {
                       onClick={()=>setSlider(true)}
                     
                     >
-                      Request
+                      Request ETH
                     </button>
                   </div>
                 </div>
@@ -414,38 +418,12 @@ export default function Homepage() {
             <div className="mt-8">
               <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 className="text-lg leading-6 font-medium text-gray-900">Overview</h2>
-                <div className="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {/* Card */}
-                  {cards.map((card) => (
-                    <div key={card.name} className="bg-white overflow-hidden shadow rounded-lg">
-                      <div className="p-5">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0">
-                            <card.icon className="h-6 w-6 text-gray-400" aria-hidden="true" />
-                          </div>
-                          <div className="ml-5 w-0 flex-1">
-                            <dl>
-                              <dt className="text-sm font-medium text-gray-500 truncate">{card.name}</dt>
-                              <dd>
-                                <div className="text-lg font-medium text-gray-900">{card.amount}</div>
-                              </dd>
-                            </dl>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="bg-gray-50 px-5 py-3">
-                        <div className="text-sm">
-                          <a href={card.href} className="font-medium text-cyan-700 hover:text-cyan-900">
-                            View all
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="mt-2 grid grid-cols-1 gap-5">
+                  <Statistics totalFollowers={totalFollowers}/>
                 </div>
               </div>
 
-              <h2 className="max-w-6xl mx-auto mt-8 px-4 text-lg leading-6 font-medium text-gray-900 sm:px-6 lg:px-8">
+              <h2 className="max-w-6xl mx-auto mt-8 mb-8 px-4 text-lg leading-6 font-medium text-gray-900 sm:px-6 lg:px-8">
                 Recent activity
               </h2>
 
@@ -592,7 +570,6 @@ export default function Homepage() {
                           </a>
                         </div>
                       </nav>
-                      <Tabuler />
                     </div>
                   </div>
                 </div>

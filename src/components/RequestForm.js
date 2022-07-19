@@ -4,8 +4,6 @@ import { setGlobalState, useGlobalState } from '../store';
 import { createRequest } from "../requests/api";
 import { getUsers } from "../requests/actions/users";
 import axios from "axios";
-import store from '../redux/store';
-
 
 const RequestForm = () =>{
   const [userWalletAddress, setUserWalletAddress] = useState(0)

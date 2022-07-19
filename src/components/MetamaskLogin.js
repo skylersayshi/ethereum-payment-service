@@ -11,10 +11,12 @@ import { createUser, getUsers } from '../requests/actions/users';
 import { useDispatch } from 'react-redux'
 import FileBase from 'react-file-base64';
 import { useGlobalState, setGlobalState } from '../store';
+import Footer from './Footer';
 
 
 
 const MetamaskLogin = () => {
+  const [globalAddress, setGlobalAddress] = useGlobalState('walletAddress')
   const [profile, setProfile] = useState({})
   const [localDid, setDid] = useState(null)
   const [selfId, setSelfId] = useState(null)
@@ -25,8 +27,6 @@ const MetamaskLogin = () => {
   selfIdRef.current = selfId
   didRef.current = localDid
   const history = useNavigate()
-
-  console.log(profile)
   
   const [userData, setUserData] = useState({
     name: '',
@@ -71,7 +71,10 @@ const MetamaskLogin = () => {
       return
     }
     localStorage.setItem('globalWalletAddress', JSON.stringify(address))
+    localStorage.setItem('isWalletConnected', true)
     setUserWalletAddress(JSON.parse(localStorage.getItem('globalWalletAddress')))
+    setGlobalState('walletAddress', address)
+    console.log('global address' + globalAddress)
     setDid(id)
     setSelfId(selfId)
     const data = await selfId.get('basicProfile', id)
