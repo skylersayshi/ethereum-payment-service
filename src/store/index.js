@@ -12,7 +12,8 @@ const { setGlobalState, useGlobalState } = createGlobalState({
   },
   transactionCount: localStorage.getItem('transactionCount'),
   falseState: false,
-  userBalance: ''
+  userBalance: '',
+  viewUserProfile: {}
 })
 
 export { useGlobalState, setGlobalState }

@@ -11,6 +11,9 @@ import { useGlobalState, setGlobalState } from './store';
 import RequestsToMe from './components/pages/RequestsToMe'
 import RequestsFromMe from './components/pages/RequestsFromMe'
 import Footer from './components/Footer'
+import FindUsers from './components/pages/FindUsers'
+import Profile from './components/pages/Profile'
+import UpdateProfile from './components/pages/UpdateProfile'
 
 const App = () => {
   const [userWalletAddress] = useGlobalState('walletAddress')
@@ -94,6 +97,9 @@ const App = () => {
           <Route path="/test" exact element={<WalletCard />} />
 		  <Route path="/requeststome" exact element={<RequestsToMe />} />
 		  <Route path="/requestsfromme" exact element={<RequestsFromMe />} />
+		  <Route path="/findusers" exact element={<FindUsers />} />
+		  <Route path="/profile" exact element={<Profile />} />
+		  <Route path="/editprofile" exact element={<UpdateProfile />} />
         </Routes>
       </Router>
     </div>

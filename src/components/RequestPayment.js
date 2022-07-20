@@ -6,7 +6,7 @@ import { ChevronRightIcon } from '@heroicons/react/solid'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUsers } from '../requests/actions/users'
 import { createRequest } from '../requests/actions/requests'
-import { setGlobalState, useGlobalState } from '../store';
+import { setGlobalState, useGlobalState } from '../store'
 import { CheckCircleIcon } from '@heroicons/react/solid'
 import StatusBar from './StatusBar'
 
@@ -65,14 +65,17 @@ export default function RequestPayment() {
     const changeMultipleStates = () =>{
       setSlider(!slider)
       setOpen(!open)
+      setStatusBar(!statusBar)
     }
 
     const filteredPeople =
         query === ''
         ? []
         : allUsers.filter((person) => {
-            return person.name.toLowerCase().includes(query.toLowerCase())
+            return person.name.toLowerCase().includes(query.toLowerCase()) || person.walletAddress.toLowerCase().includes(query.toLowerCase())
             })
+
+    
 
   return (
     <Transition.Root show={open} as={Fragment} afterLeave={() => setQuery('')} appear>
@@ -110,7 +113,7 @@ export default function RequestPayment() {
                       />
                       <Combobox.Input
                         className="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-800 placeholder-gray-400 focus:ring-0 sm:text-sm"
-                        placeholder="Search a user that follows you..."
+                        placeholder="Search by user or wallet address..."
                         onChange={(event) => setQuery(event.target.value)}
                       />
                     </div>
@@ -182,7 +185,16 @@ export default function RequestPayment() {
                             <div className="mt-8">
                                 <div className="mt-6">
                                 {statusBar ? (
-                                      <StatusBar />
+                                  <div>
+                                    <StatusBar />
+                                    <button
+                                        className="w-full flex justify-center py-2 px-4 mt-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        onClick={()=>changeMultipleStates()}
+                                    >
+                                      Close
+                                    </button>
+                                  </div>
+
                                 ) : (
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <div>

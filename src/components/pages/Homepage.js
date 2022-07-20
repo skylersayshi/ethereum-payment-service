@@ -36,15 +36,15 @@ import Statistics from '../Statistics'
 import StatusBar from '../StatusBar'
 
 const navigation = [
-  { name: 'Home', href: '#', icon: HomeIcon, current: true },
-  { name: 'Requests To Me', href: 'requeststome', icon: CreditCardIcon, current: false },
-  { name: 'Requests From Me', href: 'requestsfromme', icon: CreditCardIcon, current: false },
+  { name: 'Home', href: '/home', icon: HomeIcon, current: true },
+  { name: 'Requests To Me', href: '/requeststome', icon: CreditCardIcon, current: false },
+  { name: 'Requests From Me', href: '/requestsfromme', icon: CreditCardIcon, current: false },
   { name: 'Find Users', href: '/findusers', icon: UserGroupIcon, current: false },
 ]
 const secondaryNavigation = [
-  { name: 'Settings', href: '#', icon: CogIcon },
-  { name: 'Help', href: '#', icon: QuestionMarkCircleIcon },
-  { name: 'Privacy', href: '#', icon: ShieldCheckIcon },
+  { name: 'Edit Public Profile', href: '/editprofile', icon: CogIcon },
+  // { name: 'Help', href: '#', icon: QuestionMarkCircleIcon },
+  // { name: 'Privacy', href: '#', icon: ShieldCheckIcon },
 ]
 const cards = [
   { name: 'Account balance', href: '#', icon: ScaleIcon, amount: '$30,659.45' },
@@ -177,14 +177,14 @@ export default function Homepage() {
                     <div className="mt-6 pt-6">
                       <div className="px-2 space-y-1">
                         {secondaryNavigation.map((item) => (
-                          <a
+                          <Link
                             key={item.name}
-                            href={item.href}
+                            to={item.href}
                             className="group flex items-center px-2 py-2 text-base font-medium rounded-md text-cyan-100 hover:text-white hover:bg-cyan-600"
                           >
                             <item.icon className="mr-4 h-6 w-6 text-cyan-200" aria-hidden="true" />
                             {item.name}
-                          </a>
+                          </Link>
                         ))}
                       </div>
                     </div>
@@ -212,9 +212,9 @@ export default function Homepage() {
             <nav className="mt-5 flex-1 flex flex-col divide-y divide-cyan-800 overflow-y-auto" aria-label="Sidebar">
               <div className="px-2 space-y-1">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
-                    href={item.href}
+                    to={item.href}
                     className={classNames(
                       item.current ? 'bg-cyan-800 text-white' : 'text-cyan-100 hover:text-white hover:bg-cyan-600',
                       'group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md'
@@ -223,20 +223,20 @@ export default function Homepage() {
                   >
                     <item.icon className="mr-4 flex-shrink-0 h-6 w-6 text-cyan-200" aria-hidden="true" />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
               <div className="mt-6 pt-6">
                 <div className="px-2 space-y-1">
                   {secondaryNavigation.map((item) => (
-                    <a
+                    <Link
                       key={item.name}
-                      href={item.href}
+                      to={item.href}
                       className="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-cyan-100 hover:text-white hover:bg-cyan-600"
                     >
                       <item.icon className="mr-4 h-6 w-6 text-cyan-200" aria-hidden="true" />
                       {item.name}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -381,7 +381,7 @@ export default function Homepage() {
                               className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                               aria-hidden="true"
                             />
-                            Duke street studio
+                            {userProfile?.city ? userProfile?.city : 'The Metaverse'}
                           </dd>
                           {/* <dt className="sr-only">Account status</dt>
                           <dd className="mt-3 flex items-center text-sm text-gray-500 font-medium sm:mr-6 sm:mt-0 capitalize">

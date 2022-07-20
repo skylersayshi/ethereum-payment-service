@@ -34,7 +34,7 @@ const MetamaskLogin = () => {
     twitter: '',
     bio: '',
     profilePic: '',
-  });
+  })
 
   const [userWalletAddress, setUserWalletAddress] = useState(0)
   const dispatch = useDispatch();

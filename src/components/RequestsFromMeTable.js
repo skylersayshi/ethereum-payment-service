@@ -2,6 +2,8 @@
 import moment from 'moment'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { deleteRequest } from '../requests/actions/requests'
 const people = [
     {
       name: 'Lindsay Walton',
@@ -16,13 +18,9 @@ const people = [
   ]
   
   export default function RequestsFromMeTable({myRequestsSorted}) {
-
-    // const balanceRounded = parseFloat(balance).toFixed(2)
     const [ETHPrice, setETHPrice] = useState('')
-    // const USDRate = (ETHPrice*balanceRounded).toFixed(2)
-
-    // parseFloat(request.amountETH).toFixed(2) * ETHPrice.toFixed(2)
-
+    const dispatch = useDispatch()
+    
     const getUSDPrice = async () =>{
     axios.get('https://api.coinbase.com/v2/prices/ETH-USD/spot')
         .then(response => {
@@ -34,7 +32,7 @@ const people = [
 
     useEffect(()=>{
         getUSDPrice()
-    }, [])
+    }, [dispatch])
 
     return (
       <div className="px-4 sm:px-6 lg:px-8">
@@ -89,9 +87,12 @@ const people = [
                             <time dateTime={request.createdAt}>{moment(request.createdAt).fromNow()}</time>
                         </td>
                         <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                          <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                          <button
+                            className="text-indigo-600 hover:text-indigo-900"
+                            onClick={()=>dispatch(deleteRequest(request._id))}
+                          >
                             Delete<span className="sr-only">, {request._id}</span>
-                          </a>
+                          </button>
                         </td>
                       </tr>
                     ))}
