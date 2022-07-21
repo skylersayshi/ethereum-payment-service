@@ -2,7 +2,7 @@ import { useGlobalState, setGlobalState } from "../store";
 import axios from 'axios';
 import { useEffect, useState } from "react";
   
-  export default function Statistics({totalFollowers}) {
+  export default function Statistics({totalFollowers, totalTransactions}) {
     const [balance] = useGlobalState('userBalance')
     const balanceRounded = parseFloat(balance).toFixed(2)
     const [ETHPrice, setETHPrice] = useState('')
@@ -37,13 +37,13 @@ import { useEffect, useState } from "react";
 
             </div>
             <div className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-              <dt className="text-sm font-medium text-gray-500 truncate">Available To Request</dt>
+              <dt className="text-sm font-medium text-gray-500 truncate">Followers</dt>
               <dd className="mt-1 text-3xl font-semibold text-gray-900">{totalFollowers}</dd>
               <div className="text-xs font-medium text-gray-500 truncate">Note: You can only request your followers</div>
             </div>
             <div className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
               <dt className="text-sm font-medium text-gray-500 truncate">Total Transactions</dt>
-              <dd className="mt-1 text-3xl font-semibold text-gray-900">79</dd>
+              <dd className="mt-1 text-3xl font-semibold text-gray-900">{totalTransactions}</dd>
             </div>
         </dl>
       </div>

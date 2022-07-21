@@ -9,6 +9,7 @@ const AddTransactionCard = () => {
   const [amount, setAmount] = useState('')
   const [remark, setRemark] = useState('')
   const [loading, setLoading] = useState(false)
+  
 
   const handleSubmit = () => {
     if (!address || !amount || !remark) return

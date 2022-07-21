@@ -8,7 +8,7 @@ export default function StatusBar() {
           <CheckCircleIcon className="h-5 w-5 text-green-400" aria-hidden="true" />
         </div>
         <div className="ml-3">
-          <h3 className="text-sm font-medium text-green-800">Order completed</h3>
+          <h3 className="text-sm font-medium text-green-800">Request completed</h3>
           <div className="mt-2 text-sm text-green-700">
             <p>Your payment request was successful.</p>
             <p><i>Note: This is not a transaction.</i></p>

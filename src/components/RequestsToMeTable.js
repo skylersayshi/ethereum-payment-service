@@ -2,6 +2,8 @@
 import moment from 'moment'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import PayRequest from './PayRequest'
+import AddTransactionCard from './AddTransactionCard'
 const people = [
     {
       name: 'Lindsay Walton',
@@ -16,13 +18,14 @@ const people = [
   ]
   
   export default function RequestsToMeTable({myRequestsSorted}) {
+    const [pay, setPay] = useState(false)
+    const [requestInfo, setRequestInfo] = useState({})
 
-    // const balanceRounded = parseFloat(balance).toFixed(2)
+    const sendToPaymentDetailsPage = (request) =>{
+      setPay(true)
+      setRequestInfo(request)
+    }
     const [ETHPrice, setETHPrice] = useState('')
-    // const USDRate = (ETHPrice*balanceRounded).toFixed(2)
-
-    // parseFloat(request.amountETH).toFixed(2) * ETHPrice.toFixed(2)
-
     const getUSDPrice = async () =>{
     axios.get('https://api.coinbase.com/v2/prices/ETH-USD/spot')
         .then(response => {
@@ -36,7 +39,7 @@ const people = [
         getUSDPrice()
     }, [])
 
-    return (
+    if(!pay) {return (
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="mt-8 flex flex-col">
           <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -89,9 +92,9 @@ const people = [
                             <time dateTime={request.createdAt}>{moment(request.createdAt).fromNow()}</time>
                         </td>
                         <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                          <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                          <button onClick={()=>sendToPaymentDetailsPage(request)} className="text-indigo-600 hover:text-indigo-900">
                             Pay<span className="sr-only">, {request._id}</span>
-                          </a>
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -102,6 +105,6 @@ const people = [
           </div>
         </div>
       </div>
-    )
+    ) } else return (<PayRequest request={requestInfo} ETHPrice={ETHPrice}/>)
   }
   

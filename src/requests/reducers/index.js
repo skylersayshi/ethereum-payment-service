@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
 
-import users from './users';
-import requests from './requests';
+import users from './users'
+import requests from './requests'
+import transactions from './transactions'
 // import apiData from './posts';
 // import auth from './auth';
 // import recipes from './recipes';
@@ -9,6 +10,6 @@ import requests from './requests';
 
 export default combineReducers({
 // //    posts, apiData, auth, recipes, users
-    users, requests
+    users, requests, transactions
 });
 

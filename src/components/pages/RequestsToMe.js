@@ -33,7 +33,6 @@ function classNames(...classes) {
 }
 
 export default function RequestsSent() {
-
     const [globalWalletAddress] = useGlobalState('walletAddress')
     const [globalAccountBalance] = useGlobalState('userBalance')
     const [userWalletAddress, setUserWalletAddress] = useState(globalWalletAddress)
@@ -49,7 +48,7 @@ export default function RequestsSent() {
         dispatch(getRequests())
         dispatch(getUsers())
         setUserWalletAddress(globalWalletAddress)
-    }, [globalWalletAddress])
+    }, [globalWalletAddress, dispatch])
 
     const title = 'Requests To Me'
 

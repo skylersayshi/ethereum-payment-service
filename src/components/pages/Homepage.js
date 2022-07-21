@@ -13,7 +13,8 @@ import {
   ShieldCheckIcon,
   UserGroupIcon,
   XIcon,
-  LocationMarkerIcon
+  LocationMarkerIcon,
+  UserIcon
 } from '@heroicons/react/outline'
 import {
   CashIcon,
@@ -34,12 +35,14 @@ import RequestPayment from '../RequestPayment'
 import Tabuler from '../Tabular'
 import Statistics from '../Statistics'
 import StatusBar from '../StatusBar'
+import { fetchTransactions } from '../../requests/actions/transactions'
 
 const navigation = [
   { name: 'Home', href: '/home', icon: HomeIcon, current: true },
   { name: 'Requests To Me', href: '/requeststome', icon: CreditCardIcon, current: false },
   { name: 'Requests From Me', href: '/requestsfromme', icon: CreditCardIcon, current: false },
   { name: 'Find Users', href: '/findusers', icon: UserGroupIcon, current: false },
+  { name: 'View Profile', href: '/profile', icon: UserIcon, current: false },
 ]
 const secondaryNavigation = [
   { name: 'Edit Public Profile', href: '/editprofile', icon: CogIcon },
@@ -50,19 +53,19 @@ const cards = [
   { name: 'Account balance', href: '#', icon: ScaleIcon, amount: '$30,659.45' },
   // More items...
 ]
-const transactions = [
-  {
-    id: 1,
-    name: 'Payment to Molly Sanders',
-    href: '#',
-    amount: '$20,000',
-    currency: 'USD',
-    status: 'success',
-    date: 'July 11, 2020',
-    datetime: '2020-07-11',
-  },
-  // More transactions...
-]
+// const transactions = [
+//   {
+//     id: 1,
+//     name: 'Payment to Molly Sanders',
+//     href: '#',
+//     amount: '$20,000',
+//     currency: 'USD',
+//     status: 'success',
+//     date: 'July 11, 2020',
+//     datetime: '2020-07-11',
+//   },
+//   // More transactions...
+// ]
 const statusStyles = {
   success: 'bg-green-100 text-green-800',
   processing: 'bg-yellow-100 text-yellow-800',
@@ -79,11 +82,15 @@ export default function Homepage() {
     const [globalAccountBalance] = useGlobalState('userBalance')
     const [userWalletAddress, setUserWalletAddress] = useState(globalWalletAddress)
     const userProfile = useSelector((state)=> userWalletAddress ? state.users.find((specificUser)=> specificUser.walletAddress === userWalletAddress) : null)
+    const allTransactions = useSelector((state)=> state.transactions)
+    const userTransactions = allTransactions.filter((transaction => transaction.senderAddress === userWalletAddress || transaction.receiverAddress === userWalletAddress))
+    console.log(userTransactions)
     console.log(userProfile)
     const totalFollowers = userProfile?.followers?.length   
     const dispatch = useDispatch()
     useEffect(()=>{
         dispatch(getUsers())
+        dispatch(fetchTransactions())
         setUserWalletAddress(globalWalletAddress)
     }, [dispatch, globalWalletAddress])
 
@@ -93,6 +100,8 @@ export default function Homepage() {
     const logout = () =>{
         setGlobalState('walletAddress', '')
     }
+
+    const totalTransactions = userTransactions.length
     
   return (
     <>
@@ -148,8 +157,8 @@ export default function Homepage() {
                   <div className="flex-shrink-0 flex items-center px-4">
                     <img
                       className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/easywire-logo-cyan-300-mark-white-text.svg"
-                      alt="Easywire logo"
+                      src="https://i.imgur.com/3DBY3Xk.png"
+                      alt="rodeo logo"
                     />
                   </div>
                   <nav
@@ -159,6 +168,7 @@ export default function Homepage() {
                     <div className="px-2 space-y-1">
                       {navigation.map((item) => (
                         <Link
+                          onClick={()=>setGlobalState('viewUserProfile', userWalletAddress)}
                           key={item.name}
                           to={item.href}
                           className={classNames(
@@ -205,8 +215,8 @@ export default function Homepage() {
             <div className="flex items-center flex-shrink-0 px-4">
               <img
                 className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/easywire-logo-cyan-300-mark-white-text.svg"
-                alt="Easywire logo"
+                src="https://i.imgur.com/3DBY3Xk.png"
+                alt="rodeo logo"
               />
             </div>
             <nav className="mt-5 flex-1 flex flex-col divide-y divide-cyan-800 overflow-y-auto" aria-label="Sidebar">
@@ -281,7 +291,6 @@ export default function Homepage() {
                   className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
                 >
                   <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
 
                 {/* Profile dropdown */}
@@ -314,12 +323,13 @@ export default function Homepage() {
                     <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
+                          <Link
+                            to="/profile"
+                            onClick={()=>setGlobalState('viewUserProfile', userWalletAddress)}
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                           >
                             Your Profile
-                          </a>
+                          </Link>
                         )}
                       </Menu.Item>
                       <Menu.Item>
@@ -419,7 +429,7 @@ export default function Homepage() {
               <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 className="text-lg leading-6 font-medium text-gray-900">Overview</h2>
                 <div className="mt-2 grid grid-cols-1 gap-5">
-                  <Statistics totalFollowers={totalFollowers}/>
+                  <Statistics totalFollowers={totalFollowers} totalTransactions={totalTransactions}/>
                 </div>
               </div>
 
@@ -430,19 +440,19 @@ export default function Homepage() {
               {/* Activity list (smallest breakpoint only) */}
               <div className="shadow sm:hidden">
                 <ul role="list" className="mt-2 divide-y divide-gray-200 overflow-hidden shadow sm:hidden">
-                  {transactions.map((transaction) => (
-                    <li key={transaction.id}>
-                      <a href={transaction.href} className="block px-4 py-4 bg-white hover:bg-gray-50">
+                  {userTransactions.map((transaction) => (
+                    <li key={transaction._id}>
+                      <a href={transaction?.href} className="block px-4 py-4 bg-white hover:bg-gray-50">
                         <span className="flex items-center space-x-4">
                           <span className="flex-1 flex space-x-2 truncate">
                             <CashIcon className="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
                             <span className="flex flex-col text-gray-500 text-sm truncate">
-                              <span className="truncate">{transaction.name}</span>
+                              <span className="truncate">{transaction?.name}</span>
                               <span>
-                                <span className="text-gray-900 font-medium">{transaction.amount}</span>{' '}
-                                {transaction.currency}
+                                <span className="text-gray-900 font-medium">{transaction?.amountETH}</span>{' '}
+                                {transaction?.currency}
                               </span>
-                              <time dateTime={transaction.datetime}>{transaction.date}</time>
+                              <time>{transaction?.createdAt}</time>
                             </span>
                           </span>
                           <ChevronRightIcon className="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -508,37 +518,38 @@ export default function Homepage() {
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                          {transactions.map((transaction) => (
-                            <tr key={transaction.id} className="bg-white">
+                          {userTransactions.map((transaction) => (
+                            <tr key={transaction._id} className="bg-white">
                               <td className="max-w-0 w-full px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 <div className="flex">
-                                  <a href={transaction.href} className="group inline-flex space-x-2 truncate text-sm">
+                                  <a href='#' className="group inline-flex space-x-2 truncate text-sm">
                                     <CashIcon
                                       className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-gray-500"
                                       aria-hidden="true"
                                     />
+                                  { transaction.senderAddress === userWalletAddress ? (
                                     <p className="text-gray-500 truncate group-hover:text-gray-900">
-                                      {transaction.name}
+                                    Payment to {transaction.receiverName}
                                     </p>
+                                  ) : (
+                                    <p className="text-gray-500 truncate group-hover:text-gray-900">
+                                     Payment from {transaction.senderName}
+                                    </p>
+                                  )}
                                   </a>
                                 </div>
                               </td>
                               <td className="px-6 py-4 text-right whitespace-nowrap text-sm text-gray-500">
-                                <span className="text-gray-900 font-medium">{transaction.amount} </span>
-                                {transaction.currency}
+                                <span className="text-gray-900 font-medium">{transaction.amountETH} </span>
+                                ETH
                               </td>
                               <td className="hidden px-6 py-4 whitespace-nowrap text-sm text-gray-500 md:block">
-                                <span
-                                  className={classNames(
-                                    statusStyles[transaction.status],
-                                    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize'
-                                  )}
-                                >
-                                  {transaction.status}
+                                <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
+                                  Success
                                 </span>
                               </td>
                               <td className="px-6 py-4 text-right whitespace-nowrap text-sm text-gray-500">
-                                <time dateTime={transaction.datetime}>{transaction.date}</time>
+                                <time dateTime={transaction.datetime}>{transaction.createdAt.slice(0,10)}</time>
                               </td>
                             </tr>
                           ))}

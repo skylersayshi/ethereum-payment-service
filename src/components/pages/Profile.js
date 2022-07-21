@@ -119,13 +119,14 @@ const user = {
 
 const Profile = () => {
     const [differentUserProfileAddress] = useGlobalState('viewUserProfile')
+    console.log(differentUserProfileAddress + 'test')
     const differentUserProfile = useSelector((state)=> differentUserProfileAddress ? state.users.find((user)=> user.walletAddress === differentUserProfileAddress) : null)
     console.log(differentUserProfile)
     const dispatch = useDispatch()
 
     useEffect(()=>{
         dispatch(getUsers)
-    }, [])
+    }, [dispatch, differentUserProfileAddress])
   return (
 <>
     <div className="min-h-full">
@@ -138,7 +139,7 @@ const Profile = () => {
             <div className="relative">
                 <img
                 className="h-16 w-16 rounded-full"
-                src={differentUserProfile.profilePic ? differentUserProfile.profilePic : 'https://thumbs.dreamstime.com/b/default-avatar-photo-placeholder-profile-picture-default-avatar-photo-placeholder-profile-picture-eps-file-easy-to-edit-125707135.jpg'}
+                src={differentUserProfile?.profilePic ? differentUserProfile?.profilePic : 'https://thumbs.dreamstime.com/b/default-avatar-photo-placeholder-profile-picture-default-avatar-photo-placeholder-profile-picture-eps-file-easy-to-edit-125707135.jpg'}
                 alt=""
                 />
                 <span className="absolute inset-0 shadow-inner rounded-full" aria-hidden="true" />
@@ -188,7 +189,7 @@ const Profile = () => {
                     </div>
                     <div className="sm:col-span-1">
                     <dt className="text-sm font-medium text-gray-500">Followers</dt>
-                    <dd className="mt-1 text-sm text-gray-900">{differentUserProfile.followers.length}</dd>
+                    <dd className="mt-1 text-sm text-gray-900">{differentUserProfile?.followers.length}</dd>
                     </div>
                     <div className="sm:col-span-1">
                     <dt className="text-sm font-medium text-gray-500">Twitter</dt>
