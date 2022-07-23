@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import HomeLoggedIn from './components/pages/HomeLoggedIn'
-import RequestForm from './components/RequestForm'
+import LandingPage from './components/pages/LandingPage'
 import Homepage from './components/pages/Homepage'
 import RequestPayment from './components/RequestPayment'
 import AddTransactionCard from './components/AddTransactionCard'
@@ -10,10 +9,10 @@ import {ethers} from 'ethers'
 import { useGlobalState, setGlobalState } from './store';
 import RequestsToMe from './components/pages/RequestsToMe'
 import RequestsFromMe from './components/pages/RequestsFromMe'
-import Footer from './components/Footer'
 import FindUsers from './components/pages/FindUsers'
 import Profile from './components/pages/Profile'
 import UpdateProfile from './components/pages/UpdateProfile'
+import NewHome from './components/NewHome'
 
 const App = () => {
   const [userWalletAddress] = useGlobalState('walletAddress')
@@ -24,7 +23,6 @@ const App = () => {
 
 	const connectWalletHandler = () => {
 		if (window.ethereum && window.ethereum.isMetaMask) {
-			console.log('MetaMask Here!');
 
 			window.ethereum.request({ method: 'eth_requestAccounts'})
 			.then(result => {
@@ -32,7 +30,6 @@ const App = () => {
 				setConnButtonText('Wallet Connected');
 				getAccountBalance(result[0]);
                 localStorage.setItem('isWalletConnected', 'true')
-                console.log(localStorage.getItem('isWalletConnected'))
 			})
 			.catch(error => {
 				setErrorMessage(error.message);
@@ -40,7 +37,6 @@ const App = () => {
 			});
 
 		} else {
-			console.log('Need to install MetaMask');
 			setErrorMessage('Please install MetaMask browser extension to interact');
 		}
 	}
@@ -64,7 +60,6 @@ const App = () => {
 	};
 
 	const chainChangedHandler = () => {
-		// reload the page to avoid any errors with chain change mid use of application
 		window.location.reload();
 	}
 
@@ -84,16 +79,14 @@ const App = () => {
 
 	window.ethereum.on('chainChanged', chainChangedHandler);
 
-  console.log(userWalletAddress)
 
   return (
     <div>
       <Router>
         <Routes>
-          <Route path="/" exact element={<HomeLoggedIn />} />
+          <Route path="/" exact element={<LandingPage />} />
           <Route path="/request" exact element={<RequestPayment />} />
           <Route path="/home" exact element={<Homepage />} />
-          <Route path="/send" exact element={<AddTransactionCard />} />
           <Route path="/test" exact element={<WalletCard />} />
 		  <Route path="/requeststome" exact element={<RequestsToMe />} />
 		  <Route path="/requestsfromme" exact element={<RequestsFromMe />} />

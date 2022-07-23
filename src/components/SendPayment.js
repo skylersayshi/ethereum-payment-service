@@ -9,13 +9,15 @@ import { createRequest } from '../requests/actions/requests'
 import { setGlobalState, useGlobalState } from '../store'
 import { CheckCircleIcon } from '@heroicons/react/solid'
 import StatusBar from './StatusBar'
+import { sendMoney } from '../shared/Transaction'
+import { createTransaction } from '../requests/actions/transactions'
 import axios from 'axios'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function RequestPayment({requestETH, setRequestETH}) {
+export default function SendPayment({sendETH, setSendETH}) {
 
     const [userWalletAddress] = useGlobalState('walletAddress')
     const userProfile = useSelector((state)=> userWalletAddress ? state.users.find((specificUser)=> specificUser.walletAddress === userWalletAddress) : null) 
@@ -25,54 +27,73 @@ export default function RequestPayment({requestETH, setRequestETH}) {
     useEffect(()=>{
         dispatch(getUsers())
     }, [])
-  
-    const [requestData, setRequestData] = useState({
-          requestToName: '',
-          requestToAddress: '',
-          requestFromName: '',
-          requestFromAddress: '',
-          amountETH: '',
-          remark: ''
-    })
 
-    const clear = () =>{
-      setRequestData({
-          requestToName: '',
-          requestToAddress: '',
-          requestFromName: '',
-          requestFromAddress: '',
-          amountETH: '',
-          remark: ''
-      })
-    }
-  
-    useEffect(()=>{
-          if(userProfile) setRequestData(prev =>({...prev.requestData, requestFromAddress: userProfile.walletAddress, requestFromName: userProfile.name}));
-    }, [userProfile])
-  
-    const handleSubmit = async (event) =>{
-        event.preventDefault();  
-        dispatch(createRequest({...requestData}))
-        setStatusBar(true)
-        clear()
-    }
+    const [query, setQuery] = useState('')
 
-    
-    
+    const [open, setOpen] = useState(true)
+
     const changeMultipleStates = () =>{
-      setRequestETH(!requestETH)
+      setSendETH(!sendETH)
       setOpen(!open)
       setStatusBar(!statusBar)
     }
-    
-    const [query, setQuery] = useState('')
-    const [open, setOpen] = useState(true)
+
     const filteredPeople =
         query === ''
         ? []
         : allUsers.filter((person) => {
             return person.name.toLowerCase().includes(query.toLowerCase()) || person.walletAddress.toLowerCase().includes(query.toLowerCase())
             })
+
+    const [connectedAccount] = useGlobalState('walletAddress')
+    const [address, setAddress] = useState('')
+    const [amount, setAmount] = useState('')
+    const [remark, setRemark] = useState('')
+    const [loading, setLoading] = useState(false)
+
+    const [sendData, setSendData] = useState({
+        senderName: userProfile.name,
+        senderAddress: userProfile.walletAddress,
+        receiverName: '',
+        receiverAddress: '',
+        amountETH: '',
+        remark: ''
+    })
+
+    console.log(sendData)
+    useEffect(()=>{
+        setAddress(sendData.receiverAddress)
+        setAmount(sendData.amountETH)
+        setRemark(sendData.amountETH)
+    }, [sendData])
+
+    console.log(address)
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+
+        if (!address || !amount || !remark) return
+        setLoading(true)
+    
+        sendMoney({ connectedAccount, address, amount, remark })
+            .then(() => {
+            setGlobalState('transaction', { address, amount, remark })
+            dispatch(createTransaction(sendData))
+            setLoading(false)
+            setStatusBar(true)
+            resetForm()
+            })
+            .catch((error) => {
+            setLoading(false)
+            console.log(error)
+            })
+        }
+    
+        const resetForm = () => {
+            setAddress('')
+            setAmount('')
+            setRemark('')
+    }
 
     const [ETHPrice, setETHPrice] = useState('')
 
@@ -86,7 +107,6 @@ export default function RequestPayment({requestETH, setRequestETH}) {
       useEffect(()=>{
           getUSDPrice()
       }, [])
-
 
   return (
     <Transition.Root show={open} as={Fragment} afterLeave={() => setQuery('')} appear>
@@ -190,9 +210,6 @@ export default function RequestPayment({requestETH, setRequestETH}) {
                                 
                               </dl>
                             
-
-
-
                             <div className="mt-8">
                                 <div className="mt-6">
                                 {statusBar ? (
@@ -211,7 +228,7 @@ export default function RequestPayment({requestETH, setRequestETH}) {
                                     <div>
                                         <div>
                                             <label htmlFor="amountETH" className="block text-sm font-medium text-gray-700">
-                                            Request Amount
+                                            Amount
                                             </label>
                                             <div className="mt-1 relative rounded-md shadow-sm">
                                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -230,8 +247,8 @@ export default function RequestPayment({requestETH, setRequestETH}) {
                                                 className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
                                                 placeholder="0.00"
                                                 aria-describedby="price-currency"
-                                                value={requestData.amountETH}
-                                                onChange={(e)=>{setRequestData({...requestData, amountETH: e.target.value, requestToAddress: activeOption.walletAddress, requestToName: activeOption.name})}}
+                                                value={sendData.amountETH}
+                                                onChange={(e)=>{setSendData({...sendData, amountETH: e.target.value, receiverAddress: activeOption.walletAddress, receiverName: activeOption.name})}}
                                                 />
                                             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                                 <span className="text-gray-500 sm:text-sm" id="price-currency">
@@ -239,11 +256,7 @@ export default function RequestPayment({requestETH, setRequestETH}) {
                                                 </span>
                                             </div>
                                         </div>
-                                        {requestData.amountETH ? (
-                                        <div className="block text-sm font-medium text-gray-700">${(ETHPrice*requestData?.amountETH).toFixed(2)}</div>  
-                                        ) :(
-                                        <div className="block text-sm font-medium text-gray-700">$0.00</div>
-                                        )}
+                                        <div className="block text-sm font-medium text-gray-700">${(ETHPrice*amount).toFixed(2)}</div>
                                     </div>                      
                                     <label htmlFor="remark" className="block text-sm font-medium text-gray-700">
                                         For
@@ -255,8 +268,8 @@ export default function RequestPayment({requestETH, setRequestETH}) {
                                             name="remark"
                                             className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             placeholder="What's it for?"
-                                            value={requestData.remark}
-                                            onChange={(e)=>{setRequestData({...requestData, remark: e.target.value})}}
+                                            value={sendData.remark}
+                                            onChange={(e)=>{setSendData({...sendData, remark: e.target.value})}}
                                         />                     
                                     </div>
 
@@ -269,7 +282,8 @@ export default function RequestPayment({requestETH, setRequestETH}) {
                                         type="submit"
                                         className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                     >
-                                        Request
+                                    {!sendData.amountETH ? `Send` : `Send ${sendData.amountETH} ETH to ${sendData.receiverName}`}
+                                        {/* Send {sendData.amountETH} ETH to {sendData.receiverName} */}
                                     </button>
                                     </div>
                                 </form>

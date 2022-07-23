@@ -8,12 +8,6 @@ import { getRequests } from '../requests/actions/requests'
 import RequestsFromMeTable from './RequestsFromMeTable'
 import { Link } from 'react-router-dom'
 
-const user = {
-  name: 'Tom Cook',
-  email: 'tom@example.com',
-  imageUrl:
-    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
 const navigation = [
   { name: 'Home', href: '/home', current: false },
   { name: 'Requests To Me', href: '/requeststome', current: false },
@@ -21,9 +15,7 @@ const navigation = [
   { name: 'Find Users', href: '/findusers', current: false },
 ]
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
+  { name: 'Log Out', href: '/' },
 ]
 
 function classNames(...classes) {
@@ -38,6 +30,10 @@ export default function NavBar({title}) {
     useEffect(()=>{
       dispatch(getUsers())
     }, [dispatch])
+
+    const logout = () =>{
+      setGlobalState('walletAddress', '')
+    }
 
     return (
     <>
@@ -111,6 +107,7 @@ export default function NavBar({title}) {
                                 <Menu.Item key={item.name}>
                                   {({ active }) => (
                                     <Link
+                                      onClick={logout}
                                       to={item.href}
                                       className={classNames(
                                         active ? 'bg-gray-100' : '',

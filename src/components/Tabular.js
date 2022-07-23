@@ -43,7 +43,7 @@ const Tabuler = () => {
           <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 bg-white shadow-2xl rounded-xl">
             <header className="px-5 py-4">
               <h2 className="font-semibold text-gray-800 text-center">
-                Total Transactions({transactionCount})
+                {transactionCount} Total Transactions
               </h2>
             </header>
             <div className="p-3">
@@ -141,13 +141,13 @@ const Tabuler = () => {
           </div>
         </div>
       </section>
-      <div className="text-center mt-5 mb-10">
-        <button
+      <div className="text-center mt-2 mb-10">
+        {/* <button
           onClick={loadMoreTransactions}
-          className="text-white bg-blue-500 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-blue-500 hover:border hover:border-blue-500 focus:outline-none focus:ring"
+          className="text-white bg-indigo-600 py-2 px-5 rounded-lg drop-shadow-xl border border-transparent hover:bg-transparent hover:text-indigo-500 hover:border hover:border-indigo-500 focus:outline-none focus:ring"
         >
           Load more
-        </button>
+        </button> */}
       </div>
     </>
   )

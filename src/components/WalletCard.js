@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import {ethers} from 'ethers'
 
+//TEST TO MAKE SURE THAT WALLET ADDRESS DISPLAYS
+
 const WalletCard = () => {
 
 	const [errorMessage, setErrorMessage] = useState(null);

@@ -13,8 +13,10 @@ import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
 import React, { useEffect, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUsers } from '../../requests/actions/users'
+import { fetchTransactions } from '../../requests/actions/transactions'
 import { useGlobalState, setGlobalState } from '../../store'
 import NavBar from '../NavBar'
+import moment from 'moment'
 
 const user = {
     name: 'Whitney Francis',
@@ -119,14 +121,18 @@ const user = {
 
 const Profile = () => {
     const [differentUserProfileAddress] = useGlobalState('viewUserProfile')
-    console.log(differentUserProfileAddress + 'test')
+    console.log(differentUserProfileAddress)
     const differentUserProfile = useSelector((state)=> differentUserProfileAddress ? state.users.find((user)=> user.walletAddress === differentUserProfileAddress) : null)
-    console.log(differentUserProfile)
+    const allTransactions = useSelector((state)=> state.transactions)
+    const userTransactions = allTransactions.filter((transaction)=>transaction.senderAddress === differentUserProfileAddress || transaction.receiverAddress === differentUserProfileAddress)
     const dispatch = useDispatch()
+    console.log(userTransactions)
 
     useEffect(()=>{
         dispatch(getUsers)
+        dispatch(fetchTransactions)
     }, [dispatch, differentUserProfileAddress])
+
   return (
 <>
     <div className="min-h-full">
@@ -155,7 +161,7 @@ const Profile = () => {
         <div className="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
             <button
             type="button"
-            className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+            className="inline-flex items-center justify-center px-4 py-2 mb-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
             >
             Follow
             </button>
@@ -200,13 +206,10 @@ const Profile = () => {
                     <div className="sm:col-span-2">
                     <dt className="text-sm font-medium text-gray-500">About</dt>
                     <dd className="mt-1 text-sm text-gray-900">
-                        Fugiat ipsum ipsum deserunt culpa aute sint do nostrud anim incididunt cillum culpa consequat.
-                        Excepteur qui ipsum aliquip consequat sint. Sit id mollit nulla mollit nostrud in ea officia
-                        proident. Irure nostrud pariatur mollit ad adipisicing reprehenderit deserunt qui eu.
+                        {differentUserProfile?.bio}
                     </dd>
                     </div>
                     <div className="sm:col-span-2">
-                    <dt className="text-sm font-medium text-gray-500">Attachments</dt>
                     </div>
                 </dl>
                 </div>
@@ -222,37 +225,21 @@ const Profile = () => {
             {/* Activity Feed */}
             <div className="mt-6 flow-root">
                 <ul role="list" className="-mb-8">
-                {timeline.map((item, itemIdx) => (
-                    <li key={item.id}>
+                {userTransactions.map((item) => (
+                    <li>
                     <div className="relative pb-8">
-                        {itemIdx !== timeline.length - 1 ? (
-                        <span
-                            className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"
-                            aria-hidden="true"
-                        />
-                        ) : null}
                         <div className="relative flex space-x-3">
-                        <div>
-                            <span
-                            className={classNames(
-                                item.type.bgColorClass,
-                                'h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white'
-                            )}
-                            >
-                            <item.type.icon className="w-5 h-5 text-white" aria-hidden="true" />
-                            </span>
+                        <div>   
+                            <CheckIcon className="h-8 w-8 rounded-full flex items-center justify-center bg-green-400 text-white" aria-hidden="true" />
                         </div>
                         <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                             <div>
                             <p className="text-sm text-gray-500">
-                                {item.content}{' '}
-                                <a href="#" className="font-medium text-gray-900">
-                                {item.target}
-                                </a>
+                                {item?.senderName} paid {item?.receiverName} for <b>{item?.remark}</b>
                             </p>
                             </div>
                             <div className="text-right text-sm whitespace-nowrap text-gray-500">
-                            <time dateTime={item.datetime}>{item.date}</time>
+                            <time>{moment(item?.createdAt).fromNow()}</time>
                             </div>
                         </div>
                         </div>
@@ -260,14 +247,6 @@ const Profile = () => {
                     </li>
                 ))}
                 </ul>
-            </div>
-            <div className="mt-6 flex flex-col justify-stretch">
-                <button
-                type="button"
-                className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                Advance to offer
-                </button>
             </div>
             </div>
         </section>

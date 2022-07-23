@@ -33,6 +33,7 @@ export default function PayRequest({request, ETHPrice}) {
             }))
             dispatch(deleteRequest(request._id))
             setLoading(false)
+            setSuccess(true)
             resetForm()
           })
           .catch((error) => {

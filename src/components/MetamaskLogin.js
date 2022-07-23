@@ -3,20 +3,21 @@ import { useState, useRef, useEffect } from 'react'
 import {
   webClient,
   getRecord,
-} from '../self_id/identity';
+} from '../self_id/identity'
 
-import { useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { createUser, getUsers } from '../requests/actions/users';
+import { useSelector } from 'react-redux'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { createUser, getUsers } from '../requests/actions/users'
 import { useDispatch } from 'react-redux'
-import FileBase from 'react-file-base64';
-import { useGlobalState, setGlobalState } from '../store';
-import Footer from './Footer';
-
+import FileBase from 'react-file-base64'
+import { useGlobalState, setGlobalState } from '../store'
+import NewHome from './NewHome';
+import { Link } from 'react-router-dom';
 
 
 const MetamaskLogin = () => {
-  const [globalAddress, setGlobalAddress] = useGlobalState('walletAddress')
+  const [globalAddress] = useGlobalState('walletAddress')
+  console.log(globalAddress)
   const [profile, setProfile] = useState({})
   const [localDid, setDid] = useState(null)
   const [selfId, setSelfId] = useState(null)
@@ -27,6 +28,7 @@ const MetamaskLogin = () => {
   selfIdRef.current = selfId
   didRef.current = localDid
   const history = useNavigate()
+  const userValid = useSelector((state)=> globalAddress ? state.users.find((user)=> user.walletAddress === globalAddress) : null)
   
   const [userData, setUserData] = useState({
     name: '',
@@ -34,6 +36,7 @@ const MetamaskLogin = () => {
     twitter: '',
     bio: '',
     profilePic: '',
+    city: ''
   })
 
   const [userWalletAddress, setUserWalletAddress] = useState(0)
@@ -134,79 +137,128 @@ const MetamaskLogin = () => {
 
   return (
     
-    <div style={{ paddingTop: 50, width: 500, margin: '0 auto', display: 'flex', flex: 1 }}>
-          <div className="flex flex-1 flex-col justify-center">
-            <h1 className="text-5xl text-center">
-              Decentralized Identity
-            </h1>
-            <p className="text-xl text-center mt-2 text-gray-400">An authentication flow built with Ceramic & IDX</p>
-            <p>Wallet Address: {userWalletAddress}</p>
-            {
-              Object.keys(profile).length ? (
-                <div className="mb-4">
-                  <h1>{Object.keys(profile)}</h1>
-                  <h2 className="text-2xl font-semibold mt-6">{profile.name}</h2>
-                  <p className="text-gray-500 text-sm my-1">{profile.bio}</p>
-                  {
-                    profile.twitter && (
-                      <p className="text-lg	text-gray-900">Follow me on Twitter - @{profile.twitter}</p>
-                    )
-                  }
-                </div>
-              ) : null
-            }
+    <div>
+        <NewHome />
+          <div className="flex-1 flex-col justify-center">
 
           {
             !loaded && (
               <>
               <button
               onClick={connect}
-              className="pt-4 shadow-md bg-purple-800 mt-4 mb-2 text-white font-bold py-2 px-4 rounded"
-            >Authenticate</button>
-            
-            <button className="pt-4 shadow-md bg-blue-500 mb-2 text-white font-bold py-2 px-4 rounded" onClick={readProfile}>Read Profile</button>
-            </>
-            )
-          }
-          {
-            loaded && showGreeting && (
-              <p className="my-4 font-bold text-center">You have no profile yet. Please create one!</p>
-            )
-          }
-          {
-            loaded && (
-              <>
-                <input className="pt-4 rounded bg-gray-100 px-3 py-2" placeholder="Name" onChange={e => setUserData({...userData, name: e.target.value})} />
-                <input className="pt-4 rounded bg-gray-100 px-3 py-2 my-2" placeholder="Bio" onChange={e => setUserData({...userData, bio: e.target.value})} />
-                <input className="pt-4 rounded bg-gray-100 px-3 py-2" placeholder="Twitter username" onChange={e => setUserData({...userData, twitter: e.target.value})} />
-                <div>
-                  <FileBase
-                    type="file"
-                    multiple={false}
-                    onDone={({base64})=> setUserData({...userData, profilePic: base64})}
-                  />      
-                </div>
-                <button className="pt-4 shadow-md bg-green-500 mt-2 mb-2 text-white font-bold py-2 px-4 rounded" onClick={handleSubmit}>Update Profile</button>
-                <button className="pt-4 shadow-md bg-blue-500 mb-2 text-white font-bold py-2 px-4 rounded" onClick={readProfile}>Read Profile</button>
+              className="ml-28 inline-flex items-center m-1 px-6 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >Connect Wallet</button>
               </>
             )
           }
+          
+          {
+            loaded && !userValid && (
+              <div className='ml-0'>
+                <p className="my-4 font-bold text-gray-500 text-center">You have no profile yet. Please create one!</p>
+                <div className="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+                <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+                  <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                    <form className="space-y-6" onSubmit={handleSubmit}>
+                      <div>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                          Name
+                        </label>
+                        <div className="mt-1">
+                          <input
+                            id="name"
+                            name="name"
+                            type="text"
+                            required
+                            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            onChange={e => setUserData({...userData, name: e.target.value})}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
+                          Bio
+                        </label>
+                        <div className="mt-1">
+                          <input
+                            id="bio"
+                            name="bio"
+                            type="text"
+                            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            onChange={e => setUserData({...userData, bio: e.target.value})}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor="twitter" className="block text-sm font-medium text-gray-700">
+                          Twitter
+                        </label>
+                        <div className="mt-1">
+                          <input
+                            id="twitter"
+                            name="twitter"
+                            type="text"
+                            placeholder='@'
+                            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            onChange={e => setUserData({...userData, twitter: e.target.value})}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                          City
+                        </label>
+                        <div className="mt-1">
+                          <input
+                            id="city"
+                            name="city"
+                            type="text"
+                            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            onChange={e => setUserData({...userData, city: e.target.value})}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                          <FileBase
+                            type="file"
+                            multiple={false}
+                            onDone={({base64})=> setUserData({...userData, profilePic: base64})}
+                          />      
+                      </div>
+
+                      <div>
+                        <button
+                          type="submit"
+                          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                          Create Account
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              </div>
+            )
+          }
+          { loaded && userValid && (
+            <Link to="/home">
+            <button
+              className="ml-28 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >Welcome, {userValid?.name}</button>
+            </Link>
+          )}
+
         </div>
+
+
+        
   </div>
   )
 }
 
 export default MetamaskLogin
-
-
-
-
-
-
-              // <>
-              //   <input className="pt-4 rounded bg-gray-100 px-3 py-2" placeholder="Name" onChange={e => setName(e.target.value) setUserData(e.target.value)} />
-              //   <input className="pt-4 rounded bg-gray-100 px-3 py-2 my-2" placeholder="Bio" onChange={e => setBio(e.target.value)} />
-              //   <input className="pt-4 rounded bg-gray-100 px-3 py-2" placeholder="Twitter username" onChange={e => setTwitter(e.target.value)} />
-              //   <button className="pt-4 shadow-md bg-green-500 mt-2 mb-2 text-white font-bold py-2 px-4 rounded" onClick={updateProfile}>Update Profile</button>
-              //   <button className="pt-4 shadow-md bg-blue-500 mb-2 text-white font-bold py-2 px-4 rounded" onClick={readProfile}>Read Profile</button>
-              // </>

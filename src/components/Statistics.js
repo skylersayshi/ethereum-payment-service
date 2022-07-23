@@ -4,16 +4,14 @@ import { useEffect, useState } from "react";
   
   export default function Statistics({totalFollowers, totalTransactions}) {
     const [balance] = useGlobalState('userBalance')
-    const balanceRounded = parseFloat(balance).toFixed(2)
+    const balanceRounded = parseFloat(balance).toFixed(3)
     const [ETHPrice, setETHPrice] = useState('')
     const USDRate = (ETHPrice*balanceRounded).toFixed(2)
 
     const getUSDPrice = async () =>{
     axios.get('https://api.coinbase.com/v2/prices/ETH-USD/spot')
         .then(response => {
-        console.log(response.data.data.amount);
         setETHPrice(response.data.data.amount)
-        console.log('conversion rate: ' + ETHPrice)
     });
     }
 
@@ -31,7 +29,7 @@ import { useEffect, useState } from "react";
                     className="w-6 h-6 mb-1 ml-2 object-contain inline cursor-pointer"
                     src="https://seeklogo.com/images/E/ethereum-logo-EC6CDBA45B-seeklogo.com.png"
                     alt="Ethereum Logo"
-                    />
+                />
               </dd>
               <div className="text-xs font-medium text-gray-500 truncate">${USDRate}</div>
 
@@ -39,7 +37,6 @@ import { useEffect, useState } from "react";
             <div className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
               <dt className="text-sm font-medium text-gray-500 truncate">Followers</dt>
               <dd className="mt-1 text-3xl font-semibold text-gray-900">{totalFollowers}</dd>
-              <div className="text-xs font-medium text-gray-500 truncate">Note: You can only request your followers</div>
             </div>
             <div className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
               <dt className="text-sm font-medium text-gray-500 truncate">Total Transactions</dt>
