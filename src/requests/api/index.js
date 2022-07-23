@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = axios.create({baseURL: 'http://localhost:5001'})
+const API = axios.create({baseURL: 'https://eth-payment-platform.herokuapp.com'})
 
 export const fetchUsers = () => API.get('/users/you')
 
