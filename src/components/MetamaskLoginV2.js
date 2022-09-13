@@ -15,18 +15,18 @@ import NewHome from './NewHome';
 import { Link } from 'react-router-dom';
 
 
-const MetamaskLogin = () => {
+const MetamaskLoginV2 = () => {
   const [globalAddress] = useGlobalState('walletAddress')
   console.log(globalAddress)
-  const [profile, setProfile] = useState({})
-  const [localDid, setDid] = useState(null)
-  const [selfId, setSelfId] = useState(null)
+//   const [profile, setProfile] = useState({})
+//   const [localDid, setDid] = useState(null)
+//   const [selfId, setSelfId] = useState(null)
   const [loaded, setLoaded] = useState(false)
-  const [showGreeting, setShowGreeting] = useState(false)
-  const selfIdRef = useRef(null)
-  const didRef = useRef(null)
-  selfIdRef.current = selfId
-  didRef.current = localDid
+//   const [showGreeting, setShowGreeting] = useState(false)
+//   const selfIdRef = useRef(null)
+//   const didRef = useRef(null)
+//   selfIdRef.current = selfId
+//   didRef.current = localDid
   const history = useNavigate()
   const userValid = useSelector((state)=> globalAddress ? state.users.find((user)=> user.walletAddress === globalAddress) : null)
   
@@ -39,19 +39,21 @@ const MetamaskLogin = () => {
     city: ''
   })
 
-  const [userWalletAddress, setUserWalletAddress] = useState(0)
+//   const [userWalletAddress, setUserWalletAddress] = useState(0)
   const dispatch = useDispatch();
 
   useEffect(()=>{
-    if(userWalletAddress !== 0)
+    //if(userWalletAddress !== 0)
+    if(globalAddress){
     dispatch(getUsers())
-  }, [dispatch, userWalletAddress, globalAddress])
+    setLoaded(true)
+    }
+  }, [dispatch, globalAddress])
 
   const handleSubmit = async (e) =>{
     e.preventDefault()
-    updateProfile()
-    if(userWalletAddress)
-      dispatch(createUser({...userData, walletAddress: userWalletAddress}, history))
+    if(globalAddress)
+      dispatch(createUser({...userData, walletAddress: globalAddress}, history))
     clear();
   }
 
@@ -65,75 +67,6 @@ const MetamaskLogin = () => {
     })
   }
 
-  async function connect() {
-    const cdata = await webClient()
-    const { id, selfId, address, error } = cdata
-    
-    if (error) {
-      console.log('error: ', error)
-      return
-    }
-    localStorage.setItem('globalWalletAddress', JSON.stringify(address))
-    localStorage.setItem('isWalletConnected', true)
-    setUserWalletAddress(JSON.parse(localStorage.getItem('globalWalletAddress')))
-    setGlobalState('walletAddress', address)
-    console.log('global address' + globalAddress)
-    setDid(id)
-    setSelfId(selfId)
-    const data = await selfId.get('basicProfile', id)
-    if (data) {
-      setProfile(data)
-    } else {
-      setShowGreeting(true)
-    }
-    setLoaded(true)
-  }
-
-  async function updateProfile() {
-    if (!userData.twitter && !userData.bio && !userData.name) {
-      console.log('error... no profile information submitted')
-      return
-    }
-    if (!selfId) {
-      await connect()
-    }
-    const user = {...profile}
-    if (userData) user.twitter = userData.twitter
-    if (userData) user.bio = userData.bio
-    if (userData) user.name = userData.name
-  
-    await selfIdRef.current.set('basicProfile', user)
-    setLocalProfileData()
-    console.log('profile updated...')
-  }
-
-  async function readProfile() {
-    try {
-      const { record } = await getRecord()
-      if (record) {
-        setProfile(record)
-        console.log(record)
-      }
-      else {
-        setShowGreeting(true)
-      }
-    } catch (error) {
-      setShowGreeting(true)
-      console.log(error)
-    }
-    setLoaded(true)
-  }
-
-  async function setLocalProfileData() {
-    try {
-      const data = await selfIdRef.current.get('basicProfile', didRef.current.id)
-      if (!data) return
-      setProfile(data)
-      setShowGreeting(false)
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
 
   return (
     
@@ -141,7 +74,7 @@ const MetamaskLogin = () => {
         <NewHome />
           <div className="flex-1 flex-col justify-center">
 
-          {
+          {/* {
             !loaded && (
               <>
               <button
@@ -150,7 +83,7 @@ const MetamaskLogin = () => {
               >Connect Wallet</button>
               </>
             )
-          }
+          } */}
           
           {
             loaded && !userValid && (
@@ -248,7 +181,7 @@ const MetamaskLogin = () => {
           { loaded && userValid && (
             <Link to="/home">
             <button
-              className="ml-28 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="ml-28 mb-16 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >Welcome, {userValid?.name}</button>
             </Link>
           )}
@@ -261,4 +194,75 @@ const MetamaskLogin = () => {
   )
 }
 
-export default MetamaskLogin
+export default MetamaskLoginV2
+
+
+
+    //     const cdata = await webClient()
+    //     const { id, selfId, address, error } = cdata
+        
+    //     if (error) {
+    //       console.log('error: ', error)
+    //       return
+    //     }
+    //     localStorage.setItem('globalWalletAddress', JSON.stringify(address))
+    //     localStorage.setItem('isWalletConnected', true)
+    //     setUserWalletAddress(JSON.parse(localStorage.getItem('globalWalletAddress')))
+    //     setGlobalState('walletAddress', address)
+    //     console.log('global address' + globalAddress)
+    //     setDid(id)
+    //     setSelfId(selfId)
+    //     const data = await selfId.get('basicProfile', id)
+    //     if (data) {
+    //       setProfile(data)
+    //     } else {
+    //       setShowGreeting(true)
+    //     }
+    //     setLoaded(true)
+    //   }
+    
+    //   async function updateProfile() {
+    //     if (!userData.twitter && !userData.bio && !userData.name) {
+    //       console.log('error... no profile information submitted')
+    //       return
+    //     }
+    //     if (!selfId) {
+    //       await connect()
+    //     }
+    //     const user = {...profile}
+    //     if (userData) user.twitter = userData.twitter
+    //     if (userData) user.bio = userData.bio
+    //     if (userData) user.name = userData.name
+      
+    //     await selfIdRef.current.set('basicProfile', user)
+    //     setLocalProfileData()
+    //     console.log('profile updated...')
+    //   }
+    
+    //   async function readProfile() {
+    //     try {
+    //       const { record } = await getRecord()
+    //       if (record) {
+    //         setProfile(record)
+    //         console.log(record)
+    //       }
+    //       else {
+    //         setShowGreeting(true)
+    //       }
+    //     } catch (error) {
+    //       setShowGreeting(true)
+    //       console.log(error)
+    //     }
+    //     setLoaded(true)
+    //   }
+    
+    //   async function setLocalProfileData() {
+    //     try {
+    //       const data = await selfIdRef.current.get('basicProfile', didRef.current.id)
+    //       if (!data) return
+    //       setProfile(data)
+    //       setShowGreeting(false)
+    //     } catch (error) {
+    //       console.log('error', error)
+    //     }
+    //   }

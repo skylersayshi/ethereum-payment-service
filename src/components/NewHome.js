@@ -37,7 +37,7 @@ export default function NewHome() {
                 An application for users to easily request and send ETH to users across the world. Built on Ethereum, Metamask, Express, Node, and React.
               </p>
               <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                Click the <b className='text-indigo-400'>Connect Wallet</b> button below to connect to your Metamask wallet, and please enter your information to create your <b className='text-indigo-400'>Decentralized Identity</b>.
+                You are being prompted to <b className='text-indigo-400'>Connect your Wallet</b> by signing into your Metamask account. If you are an existing user, click the <b className='text-indigo-400'>Welcome</b> button below to access your <b className='text-indigo-400'>Dashboard.</b> If you are a new user, please enter your public information below.
               </p>
               <p className='mt-4'><em className='text-gray-500'>Note: This information will be public to other users, but your data is always safe!</em></p>
             </div>

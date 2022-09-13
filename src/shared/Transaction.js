@@ -86,7 +86,7 @@ const sendMoney = async ({ connectedAccount, address, amount, remark }) => {
     const transactionCount = await transactionContract.getTransactionsCount()
     setGlobalState('transactionCount', transactionCount.toNumber())
 
-    window.location.reload()
+    // window.location.reload()
   } catch (error) {
     console.log(error)
     throw new Error('No ethereum object.')

@@ -59,24 +59,20 @@ function classNames(...classes) {
 
 
 export default function Homepage() {
-    const [globalWalletAddress] = useGlobalState('walletAddress')
-    const [globalAccountBalance] = useGlobalState('userBalance')
-    const [myUserProfile, setMyUserProfile] = useGlobalState('viewUserProfile')
-    const [userWalletAddress, setUserWalletAddress] = useState(globalWalletAddress)
+    const [viewUserProfile, setViewUserProfile] = useGlobalState('viewUserProfile')
+    const [userWalletAddress] = useGlobalState('walletAddress')
+    // const [globalAccountBalance] = useGlobalState('userBalance')
+    // const [userWalletAddress, setUserWalletAddress] = useState(globalWalletAddress)
     const userProfile = useSelector((state)=> userWalletAddress ? state.users.find((specificUser)=> specificUser.walletAddress === userWalletAddress) : null)
     const allTransactions = useSelector((state)=> state.transactions)
     const userTransactions = allTransactions.filter((transaction => transaction.senderAddress === userWalletAddress || transaction.receiverAddress === userWalletAddress))  
     const totalFollowers = userProfile?.followers?.length   
     const dispatch = useDispatch()
     useEffect(()=>{
+        // setUserWalletAddress(globalWalletAddress)
         dispatch(getUsers())
         dispatch(fetchTransactions())
-        setUserWalletAddress(globalWalletAddress)
-    }, [dispatch, globalWalletAddress])
-
-    if(userWalletAddress){
-      setMyUserProfile(userWalletAddress)
-    }
+    }, [dispatch, userWalletAddress])
     
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [requestETH, setRequestETH] = useState(false)
@@ -173,6 +169,7 @@ export default function Homepage() {
                         <Link
                           key={item.name}
                           to={item.href}
+                          onClick={()=>{setGlobalState('viewUserProfile', userWalletAddress)}}
                           className={classNames(
                             item.current
                               ? 'bg-cyan-800 text-white'
@@ -225,6 +222,7 @@ export default function Homepage() {
               <div className="px-2 space-y-1">
                 {navigation.map((item) => (
                   <Link
+                    onClick={()=>{setGlobalState('viewUserProfile', userWalletAddress)}}
                     key={item.name}
                     to={item.href}
                     className={classNames(

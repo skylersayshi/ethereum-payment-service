@@ -13,6 +13,7 @@ import FindUsers from './components/pages/FindUsers'
 import Profile from './components/pages/Profile'
 import UpdateProfile from './components/pages/UpdateProfile'
 import NewHome from './components/NewHome'
+import MetamaskLoginV2 from './components/MetamaskLoginV2'
 
 const App = () => {
   const [userWalletAddress] = useGlobalState('walletAddress')
@@ -44,7 +45,7 @@ const App = () => {
 	// update account, will cause component re-render
 	const accountChangedHandler = (newAccount) => {
 		setDefaultAccount(newAccount);
-    setGlobalState('walletAddress', newAccount)
+    	setGlobalState('walletAddress', newAccount)
 		getAccountBalance(newAccount.toString());
 	}
 

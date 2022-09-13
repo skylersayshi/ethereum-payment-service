@@ -11,6 +11,7 @@ import { useGlobalState } from '../../store'
 import { useEffect } from 'react'
 import MetamaskLogin from '../MetamaskLogin'
 import { Link } from 'react-router-dom'
+import MetamaskLoginV2 from '../MetamaskLoginV2'
 
 
 export default function LandingPage() {
@@ -24,7 +25,7 @@ export default function LandingPage() {
 
   return (
     <div>
-        <MetamaskLogin />
+        <MetamaskLoginV2 />
     </div>
   )
 }

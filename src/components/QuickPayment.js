@@ -10,7 +10,7 @@ import { createTransaction } from '../requests/actions/transactions'
 import axios from 'axios'
 
 export default function QuickPayment({quickPay, setQuickPay, userProfile}) {
-
+    
     const [connectedAccount] = useGlobalState('walletAddress')
     const [address, setAddress] = useState('')
     const [amount, setAmount] = useState('')

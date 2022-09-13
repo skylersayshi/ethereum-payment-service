@@ -33,9 +33,9 @@ function classNames(...classes) {
 
 export default function RequestsSent() {
 
-    const [globalWalletAddress] = useGlobalState('walletAddress')
+    const [userWalletAddress] = useGlobalState('walletAddress')
     const [globalAccountBalance] = useGlobalState('userBalance')
-    const [userWalletAddress, setUserWalletAddress] = useState(globalWalletAddress)
+    // const [userWalletAddress, setUserWalletAddress] = useState(globalWalletAddress)
     const userProfile = useSelector((state)=> userWalletAddress ? state.users.find((specificUser)=> specificUser.walletAddress === userWalletAddress) : null)
     const allRequests = useSelector((state)=> state.requests)
     
@@ -48,8 +48,8 @@ export default function RequestsSent() {
     useEffect(()=>{
         dispatch(getRequests())
         dispatch(getUsers())
-        setUserWalletAddress(globalWalletAddress)
-    }, [dispatch, globalWalletAddress])
+        // setUserWalletAddress(globalWalletAddress)
+    }, [dispatch, userWalletAddress])
     const title = 'Requests From Me'
   return (
     <>

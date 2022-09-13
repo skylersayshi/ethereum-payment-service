@@ -8,9 +8,9 @@ import { getUsers, updateUser } from "../../requests/actions/users"
 
 export default function UpdateProfile() {
   const title='Edit Profile'
-  const [globalWalletAddress] = useGlobalState('walletAddress')
+  const [userWalletAddress] = useGlobalState('walletAddress')
   const [globalAccountBalance] = useGlobalState('userBalance')
-  const [userWalletAddress, setUserWalletAddress] = useState(globalWalletAddress)
+  // const [userWalletAddress, setUserWalletAddress] = useState(globalWalletAddress)
   const userProfile = useSelector((state)=> userWalletAddress ? state.users.find((specificUser)=> specificUser.walletAddress === userWalletAddress) : null)
   const totalFollowers = userProfile?.followers?.length   
   const dispatch = useDispatch()
@@ -28,7 +28,7 @@ export default function UpdateProfile() {
 
   useEffect(()=>{
       dispatch(getUsers())
-      setUserWalletAddress(globalWalletAddress)
+      // setUserWalletAddress(globalWalletAddress)
   }, [dispatch])
 
   const clear = () =>{
