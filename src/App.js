@@ -16,8 +16,8 @@ import NewHome from './components/NewHome'
 import MetamaskLoginV2 from './components/MetamaskLoginV2'
 
 const App = () => {
-  const [userWalletAddress] = useGlobalState('walletAddress')
-  const [errorMessage, setErrorMessage] = useState(null);
+  	const [userWalletAddress] = useGlobalState('walletAddress')
+  	const [errorMessage, setErrorMessage] = useState(null);
 	const [defaultAccount, setDefaultAccount] = useState(null);
 	const [userBalance, setUserBalance] = useState(null);
 	const [connButtonText, setConnButtonText] = useState('Connect Wallet');
@@ -53,7 +53,7 @@ const App = () => {
 		window.ethereum.request({method: 'eth_getBalance', params: [account, 'latest']})
 		.then(balance => {
 			setUserBalance(ethers.utils.formatEther(balance));
-      setGlobalState('userBalance', ethers.utils.formatEther(balance))
+      		setGlobalState('userBalance', ethers.utils.formatEther(balance))
 		})
 		.catch(error => {
 			setErrorMessage(error.message);
@@ -85,15 +85,15 @@ const App = () => {
     <div>
       <Router>
         <Routes>
-          <Route path="/" exact element={<LandingPage />} />
-          <Route path="/request" exact element={<RequestPayment />} />
-          <Route path="/home" exact element={<Homepage />} />
-          <Route path="/test" exact element={<WalletCard />} />
-		  <Route path="/requeststome" exact element={<RequestsToMe />} />
-		  <Route path="/requestsfromme" exact element={<RequestsFromMe />} />
-		  <Route path="/findusers" exact element={<FindUsers />} />
-		  <Route path="/profile" exact element={<Profile />} />
-		  <Route path="/editprofile" exact element={<UpdateProfile />} />
+          <Route exact path="/" element={<LandingPage />} />
+          <Route path="/request" element={<RequestPayment />} />
+          <Route path="/home" element={<Homepage />} />
+          <Route path="/test" element={<WalletCard />} />
+		  <Route path="/requeststome" element={<RequestsToMe />} />
+		  <Route path="/requestsfromme" element={<RequestsFromMe />} />
+		  <Route path="/findusers" element={<FindUsers />} />
+		  <Route path="/profile" element={<Profile />} />
+		  <Route path="/editprofile" element={<UpdateProfile />} />
         </Routes>
       </Router>
     </div>
