@@ -15,6 +15,7 @@ import UpdateProfile from './components/pages/UpdateProfile'
 import NewHome from './components/NewHome'
 import MetamaskLoginV2 from './components/MetamaskLoginV2'
 import NoMetamask from './components/NoMetamask'
+import MobileHomepage from './Homepage/src/MobileHomepage'
 
 const App = () => {
   	const [userWalletAddress] = useGlobalState('walletAddress')
@@ -91,7 +92,7 @@ const App = () => {
 
 
   
-	if(windowTooSmall) return(<div>Hello</div>)
+	if(windowTooSmall) return(<MobileHomepage />)
 	return(
 	<div>
 		{!hasMetamask && !windowTooSmall && ( <NoMetamask />)}	
