@@ -95,7 +95,7 @@ const sendMoney = async ({ connectedAccount, address, amount, remark }) => {
 
 const getAllTransactions = async () => {
   try {
-    if (!ethereum) return alert('Please install Metamask')
+    if (!ethereum) return console.log('Please install Metamask')
     const transactionContract = getEtheriumContract()
     const availableTransactions = await transactionContract.getAllTransactions()
 

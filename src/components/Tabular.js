@@ -3,6 +3,8 @@ import Identicon from 'identicon.js'
 import { faker } from '@faker-js/faker'
 import { getAllTransactions } from '../shared/Transaction'
 import { useGlobalState } from '../store'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchTransactions } from '../requests/actions/transactions'
 
 const Tabuler = () => {
   const [transactionsStore] = useGlobalState('transactions')
@@ -10,30 +12,34 @@ const Tabuler = () => {
   const [transactions, setTransaction] = useState([])
   const [start, setStart] = useState(0)
   const [end, setEnd] = useState(6)
+  const dispatch = useDispatch()
+  const allTransactions = useSelector((state)=> state.transactions)
+  const firstTransactions = allTransactions.slice(start, end)
 
   const makeImage = (address) => {
     const data = new Identicon(address, 400).toString()
     return `data:image/png;base64,${data}`
   }
 
-  const loadMoreTransactions = () => {
-    setTransaction((prevState) => [
-      ...prevState,
-      ...transactionsStore.slice(start, end),
-    ])
-    setStart(end)
-    setEnd(end * 2)
-  }
+  // const loadMoreTransactions = () => {
+  //   setTransaction((prevState) => [
+  //     ...prevState,
+  //     ...transactionsStore.slice(start, end),
+  //   ])
+  //   setStart(end)
+  //   setEnd(end * 2)
+  // }
 
   const shortenAddress = (address) =>
     `${address.slice(0, 5)}...${address.slice(address.length - 4)}`
 
   useEffect(() => {
-    getAllTransactions().then((data) => {
-      setTransaction([...data.slice(start, end)])
-      setStart(end)
-      setEnd(end * 2)
-    })
+    //  getAllTransactions().then((data) => {
+    //   setTransaction([...data.slice(start, end)])
+    //   setStart(end)
+    //   setEnd(end * 2)
+    // })
+    dispatch(fetchTransactions())
   }, [])
 
   return (
@@ -72,14 +78,14 @@ const Tabuler = () => {
                     </tr>
                   </thead>
                   <tbody className="text-sm divide-y divide-gray-100">
-                    {transactions.map((tx, index) => (
+                    {firstTransactions.map((tx, index) => (
                       <tr key={index + 1}>
                         <td className="p-2 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3">
                               <img
                                 className="rounded-full"
-                                src={makeImage(tx.sender)}
+                                src={makeImage(tx.senderAddress)}
                                 width="40"
                                 height="40"
                                 alt="Alex Shatov"
@@ -93,24 +99,24 @@ const Tabuler = () => {
                         <td className="p-2 whitespace-nowrap">
                           <div className="text-left">
                             <a
-                              href={`https://ropsten.etherscan.io/address/${tx.sender}`}
+                              href={`https://ropsten.etherscan.io/address/${tx.senderAddress}`}
                               target="_blank"
                               rel="noreferrer"
                               className="hover:text-blue-500"
                             >
-                              {shortenAddress(tx.sender)}
+                              {shortenAddress(tx.senderAddress)}
                             </a>
                           </div>
                         </td>
                         <td className="p-2 whitespace-nowrap">
                           <div className="text-left">
                             <a
-                              href={`https://ropsten.etherscan.io/address/${tx.receiver}`}
+                              href={`https://ropsten.etherscan.io/address/${tx.receiverAddress}`}
                               target="_blank"
                               rel="noreferrer"
                               className="hover:text-blue-500"
                             >
-                              {shortenAddress(tx.receiver)}
+                              {shortenAddress(tx.receiverAddress)}
                             </a>
                           </div>
                         </td>
@@ -121,12 +127,12 @@ const Tabuler = () => {
                               src="https://seeklogo.com/images/E/ethereum-logo-EC6CDBA45B-seeklogo.com.png"
                               alt="Ethereum Logo"
                             />
-                            <span className="text-green-500">{tx.amount}</span>
+                            <span className="text-green-500">{tx.amountETH}</span>
                           </div>
                         </td>
                         <td className="p-2 whitespace-nowrap">
                           <div className="text-sm text-center">
-                            {tx.timestamp}
+                            {tx.createdAt.slice(0,10)}
                           </div>
                         </td>
                         <td className="p-2 whitespace-nowrap">

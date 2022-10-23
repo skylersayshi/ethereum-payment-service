@@ -14,6 +14,7 @@ import Profile from './components/pages/Profile'
 import UpdateProfile from './components/pages/UpdateProfile'
 import NewHome from './components/NewHome'
 import MetamaskLoginV2 from './components/MetamaskLoginV2'
+import NoMetamask from './components/NoMetamask'
 
 const App = () => {
   	const [userWalletAddress] = useGlobalState('walletAddress')
@@ -21,10 +22,14 @@ const App = () => {
 	const [defaultAccount, setDefaultAccount] = useState(null);
 	const [userBalance, setUserBalance] = useState(null);
 	const [connButtonText, setConnButtonText] = useState('Connect Wallet');
+	const [hasMetamask, setHasMetamask] = useState(false)
+	const [windowTooSmall, setWindowTooSmall] = useState(true)
+
+	//window size handler
 
 	const connectWalletHandler = () => {
 		if (window.ethereum && window.ethereum.isMetaMask) {
-
+			setHasMetamask(true)
 			window.ethereum.request({ method: 'eth_requestAccounts'})
 			.then(result => {
 				accountChangedHandler(result[0]);
@@ -33,12 +38,12 @@ const App = () => {
                 localStorage.setItem('isWalletConnected', 'true')
 			})
 			.catch(error => {
-				setErrorMessage(error.message);
+				setErrorMessage(error.message)
 			
 			});
 
 		} else {
-			setErrorMessage('Please install MetaMask browser extension to interact');
+			console.log('Please install MetaMask browser extension to interact');
 		}
 	}
 
@@ -73,16 +78,23 @@ const App = () => {
     }
 
     useEffect(()=>{
-        connectWalletOnPageLoad()
+		if(window.innerWidth>=650){
+			setWindowTooSmall(false)
+			connectWalletOnPageLoad()
+		}
     }, [userWalletAddress])
 
-	window.ethereum.on('accountsChanged', accountChangedHandler);
+	if (window.ethereum && window.ethereum.isMetaMask) {
+		window.ethereum.on('accountsChanged', accountChangedHandler);
+		window.ethereum.on('chainChanged', chainChangedHandler);
+	}
 
-	window.ethereum.on('chainChanged', chainChangedHandler);
 
-
-  return (
-    <div>
+  
+	if(windowTooSmall) return(<div>Hello</div>)
+	return(
+	<div>
+		{!hasMetamask && !windowTooSmall && ( <NoMetamask />)}	
       <Router>
         <Routes>
           <Route exact path="/" element={<LandingPage />} />

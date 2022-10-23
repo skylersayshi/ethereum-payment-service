@@ -18,10 +18,10 @@ export default function LandingPage() {
 
   const [connectedAccount] = useGlobalState('connectedAccount')
 
-  useEffect(() => {
-    isWallectConnected()
-    checkIfTransactionExist()
-  }, [])
+  // useEffect(() => {
+  //   // isWallectConnected()
+  //   // checkIfTransactionExist()
+  // }, [])
 
   return (
     <div>

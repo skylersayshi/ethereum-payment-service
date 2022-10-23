@@ -13,9 +13,9 @@ const navigation = [
 
 export default function NewHome() {
   return (
-    <div className="relative bg-white overflow-hidden">
+    <div className="relative overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        <div className="relative bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full">
+        <div className="relative sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full">
           <svg
             className="hidden lg:block absolute right-0 inset-y-0 h-full w-48 text-white transform translate-x-1/2"
             fill="currentColor"
@@ -34,7 +34,7 @@ export default function NewHome() {
                 <span className="block text-indigo-600 xl:inline">YOUR money</span>
               </h1>
               <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                An application for users to easily request and send ETH to users across the world. Built on Ethereum, Metamask, Express, Node, and React.
+                An application for users to easily request and send ETH to users across the world.
               </p>
               <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                 You are being prompted to <b className='text-indigo-400'>Connect your Wallet</b> by signing into your Metamask account. If you are an existing user, click the <b className='text-indigo-400'>Welcome</b> button below to access your <b className='text-indigo-400'>Dashboard.</b> If you are a new user, please enter your public information below.
