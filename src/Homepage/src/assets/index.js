@@ -1,7 +1,7 @@
 import airbnb from "./airbnb.png";
 import bill from "./bill.png";
 import binance from "./binance.png";
-import card from "./card.png";
+import card2 from "./card2.png";
 import coinbase from "./coinbase.png";
 import dropbox from "./dropbox.png";
 import logo from "./logo.png";
@@ -28,7 +28,7 @@ export {
   airbnb,
   bill,
   binance,
-  card,
+  card2,
   coinbase,
   dropbox,
   logo,

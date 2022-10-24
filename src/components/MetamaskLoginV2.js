@@ -15,6 +15,7 @@ import NewHome from './NewHome';
 import { Link } from 'react-router-dom'
 
 import {ethers} from 'ethers'
+import WelcomeAlert from './WelcomeAlert';
 
 
 const MetamaskLoginV2 = () => {
@@ -62,6 +63,9 @@ const MetamaskLoginV2 = () => {
   return (
     
     <div>
+        { loaded && userValid && (
+        <WelcomeAlert />
+        )}
         <NewHome />
           <div className="flex-1 flex-col justify-center">
           

@@ -12,6 +12,8 @@ import { useEffect } from 'react'
 import MetamaskLogin from '../MetamaskLogin'
 import { Link } from 'react-router-dom'
 import MetamaskLoginV2 from '../MetamaskLoginV2'
+import { Footer } from '../../Homepage/src/components'
+import styles from '../../Homepage/src/style'
 
 
 export default function LandingPage() {
@@ -26,6 +28,11 @@ export default function LandingPage() {
   return (
     <div>
         <MetamaskLoginV2 />
+        <div className={`bg-primary ${styles.paddingX} ${styles.flexCenter} mt-32 rounded-lg`}>
+          <div className={`${styles.boxWidth}`}>
+            <Footer />
+          </div>
+        </div>
     </div>
   )
 }

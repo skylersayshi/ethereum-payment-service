@@ -49,7 +49,7 @@ const Tabuler = () => {
           <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 bg-white shadow-2xl rounded-xl">
             <header className="px-5 py-4">
               <h2 className="font-semibold text-gray-800 text-center">
-                {transactionCount} Total Transactions
+                {allTransactions.length} Total Transactions
               </h2>
             </header>
             <div className="p-3">

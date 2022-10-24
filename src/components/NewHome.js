@@ -3,6 +3,7 @@ import { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import Tabuler from './Tabular'
+import { Link } from 'react-router-dom'
 
 const navigation = [
   { name: 'Product', href: '#' },
@@ -34,17 +35,17 @@ export default function NewHome() {
                 <span className="block text-indigo-600 xl:inline">YOUR money</span>
               </h1>
               <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                An application for users to easily request and send ETH to users across the world.
+                An application for users to easily request and send ETH to users across the world. <Link to="/info" className='text-underline'><b>Learn More...</b></Link>
               </p>
               <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                 You are being prompted to <b className='text-indigo-400'>Connect your Wallet</b> by signing into your Metamask account. If you are an existing user, click the <b className='text-indigo-400'>Welcome</b> button below to access your <b className='text-indigo-400'>Dashboard.</b> If you are a new user, please enter your public information below.
               </p>
-              <p className='mt-4'><em className='text-gray-500'>Note: This information will be public to other users, but your data is always safe!</em></p>
+              <p className='mt-4'><em className='text-gray-500'>Note: This application currently transacts ONLY on the Goerli Testnet for further testing. Mainnet payments will not be successful.</em></p>
             </div>
           </main>
         </div>
       </div>
-      <div className="mt-32 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+      <div className="lg:mt-32 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
         <Tabuler />
       </div>
     </div>

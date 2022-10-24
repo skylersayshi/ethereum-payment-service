@@ -22,13 +22,11 @@ const Business = () =>  (
   <section id="features" className={layout.section}>
     <div className={layout.sectionInfo}>
       <h2 className={styles.heading2}>
-        You do the business, <br className="sm:block hidden" /> we’ll handle
-        the money.
+        An all-in-one platform <br className="sm:block hidden" /> to handle
+        your money.
       </h2>
       <p className={`${styles.paragraph} max-w-[470px] mt-5`}>
-        With the right credit card, you can improve your financial life by
-        building credit, earning rewards and saving money. But with hundreds
-        of credit cards on the market.
+        We built a powerful, simplified dashboard so you can keep track of your money. Send and complete requests, find users, and view payment history all in one place.
       </p>
 
       {/* <Button styles={`mt-10`} /> */}

@@ -20,13 +20,13 @@ import MobileHomepage from './Homepage/src/MobileHomepage'
 const App = () => {
   	const [userWalletAddress] = useGlobalState('walletAddress')
   	const [errorMessage, setErrorMessage] = useState(null);
+	const [metamaskReload, setMetamaskReload] = useState(false)
 	const [defaultAccount, setDefaultAccount] = useState(null);
 	const [userBalance, setUserBalance] = useState(null);
 	const [connButtonText, setConnButtonText] = useState('Connect Wallet');
 	const [hasMetamask, setHasMetamask] = useState(false)
 	const [windowTooSmall, setWindowTooSmall] = useState(true)
 
-	//window size handler
 
 	const connectWalletHandler = () => {
 		if (window.ethereum && window.ethereum.isMetaMask) {
@@ -63,6 +63,7 @@ const App = () => {
 		})
 		.catch(error => {
 			setErrorMessage(error.message);
+			setMetamaskReload(true)
 		});
 	};
 
@@ -83,7 +84,7 @@ const App = () => {
 			setWindowTooSmall(false)
 			connectWalletOnPageLoad()
 		}
-    }, [userWalletAddress])
+    }, [userWalletAddress, metamaskReload])
 
 	if (window.ethereum && window.ethereum.isMetaMask) {
 		window.ethereum.on('accountsChanged', accountChangedHandler);
@@ -95,7 +96,7 @@ const App = () => {
 	if(windowTooSmall) return(<MobileHomepage />)
 	return(
 	<div>
-		{!hasMetamask && !windowTooSmall && ( <NoMetamask />)}	
+		{!hasMetamask && !windowTooSmall && ( <NoMetamask />)}
       <Router>
         <Routes>
           <Route exact path="/" element={<LandingPage />} />
@@ -107,6 +108,7 @@ const App = () => {
 		  <Route path="/findusers" element={<FindUsers />} />
 		  <Route path="/profile" element={<Profile />} />
 		  <Route path="/editprofile" element={<UpdateProfile />} />
+		  <Route path="/info" element={<MobileHomepage />} />
         </Routes>
       </Router>
     </div>
